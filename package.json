@@ -2,8 +2,14 @@
   "name": "demo-banking",
   "private": true,
   "version": "0.0.0",
+  "prettier": "@interpause/prettier-config",
   "workspaces": [
     "app",
     "server"
-  ]
+  ],
+  "devDependencies": {
+    "@interpause/prettier-config": "1.1.0",
+    "prettier": "3.3.3",
+    "prettier-plugin-organize-imports": "^4.0.0"
+  }
 }

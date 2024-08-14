@@ -5,14 +5,17 @@
   "type": "module",
   "module": "src/index.ts",
   "scripts": {
-    "dev": "NODE_ENV=development bun --watch src/index.ts",
+    "dev": "bun --watch src/index.ts",
     "prod": "NODE_ENV=production bun src/index.ts"
   },
   "dependencies": {
-    "elysia": "^1.1.6"
+    "elysia": "^1.1.6",
+    "lodash-es": "^4.17.21",
+    "mongoose": "^8.5.3"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/lodash-es": "^4.17.12"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"

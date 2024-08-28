@@ -1,12 +1,14 @@
 /** Infinite scrolling list of transactions. */
 
 import { useCallback, useState } from 'react'
+import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList } from 'react-window'
 import InfiniteLoader from 'react-window-infinite-loader'
 import { fetchAllIds, fetchDataById } from '../mock'
 import TxnCard from './TxnCard'
 
 const REFRESH_TIMEOUT = 2000
+const ITEM_SIZE_RATIO = 0.1
 
 /** Indicator that list is loading more ids. */
 function LoadingIndicatorItem() {
@@ -114,24 +116,28 @@ export default function TxnList() {
   if (numItems === 0) refreshIdList()
 
   return (
-    <InfiniteLoader
-      isItemLoaded={isItemLoaded}
-      itemCount={numItems}
-      loadMoreItems={refreshIdList}
-    >
-      {({ onItemsRendered, ref }) => (
-        <FixedSizeList
+    <AutoSizer>
+      {({ height, width }) => (
+        <InfiniteLoader
+          isItemLoaded={isItemLoaded}
           itemCount={numItems}
-          height={400}
-          itemSize={20}
-          width={700}
-          onItemsRendered={onItemsRendered}
-          itemData={getItemData}
-          ref={ref}
+          loadMoreItems={refreshIdList}
         >
-          {Item}
-        </FixedSizeList>
+          {({ onItemsRendered, ref }) => (
+            <FixedSizeList
+              itemCount={numItems}
+              height={height}
+              itemSize={Math.ceil(height * ITEM_SIZE_RATIO)}
+              width={width}
+              onItemsRendered={onItemsRendered}
+              itemData={getItemData}
+              ref={ref}
+            >
+              {Item}
+            </FixedSizeList>
+          )}
+        </InfiniteLoader>
       )}
-    </InfiniteLoader>
+    </AutoSizer>
   )
 }

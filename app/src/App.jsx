@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import reactLogo from './assets/react.svg'
+import TxnList from './TxnList'
 import viteLogo from '/vite.svg'
 
 function App() {
@@ -28,7 +29,7 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
-      <progress className="progress w-56"></progress>
+      <TxnList />
     </>
   )
 }

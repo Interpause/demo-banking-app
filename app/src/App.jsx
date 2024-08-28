@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import reactLogo from './assets/react.svg'
-import TxnList from './TxnList'
+import TxnList from './components/TxnList'
 import viteLogo from '/vite.svg'
 
 function App() {

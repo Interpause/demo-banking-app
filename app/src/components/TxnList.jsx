@@ -3,7 +3,7 @@
 import { useCallback, useState } from 'react'
 import { FixedSizeList } from 'react-window'
 import InfiniteLoader from 'react-window-infinite-loader'
-import { fetchAllIds, fetchDataById } from './mock'
+import { fetchAllIds, fetchDataById } from '../mock'
 import TxnCard from './TxnCard'
 
 const REFRESH_TIMEOUT = 2000

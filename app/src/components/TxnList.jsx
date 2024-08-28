@@ -12,7 +12,9 @@ const ITEM_SIZE_RATIO = 0.1
 
 /** Indicator that list is loading more ids. */
 function LoadingIndicatorItem() {
-  return <span className="loading loading-spinner loading-xs"></span>
+  return (
+    <span className="absolute inset-x-0 mx-auto loading loading-spinner loading-lg"></span>
+  )
 }
 
 /** List item. */

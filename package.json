@@ -2,13 +2,17 @@
   "name": "demo-banking",
   "private": true,
   "version": "0.0.0",
+  "type": "module",
   "prettier": "@interpause/prettier-config",
   "workspaces": [
     "app",
     "server"
   ],
   "devDependencies": {
+    "@eslint/js": "^9.9.1",
     "@interpause/prettier-config": "1.1.0",
+    "eslint": "^9.9.1",
+    "eslint-config-prettier": "^9.1.0",
     "prettier": "3.3.3",
     "prettier-plugin-organize-imports": "^4.0.0"
   }

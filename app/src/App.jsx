@@ -1,4 +1,5 @@
-import TxnList from './components/TxnList'
+import { TxnProvider } from './components/TxnContext'
+import TxnListDisplay from './components/TxnListDisplay'
 
 function App() {
   const toggleDarkMode = () => {
@@ -13,7 +14,9 @@ function App() {
         Demo Banking App
       </h1>
       <div className="w-full h-96">
-        <TxnList />
+        <TxnProvider>
+          <TxnListDisplay />
+        </TxnProvider>
       </div>
     </div>
   )

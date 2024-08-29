@@ -1,10 +1,11 @@
 /** Generate mock data with loading delay. */
 
 const MOCK_DELAY = 1000
-const MOCK_IDS_PER_REFRESH = 20
-const MOCK_ID_LIMIT = 200
+const MOCK_IDS_PER_REFRESH = 50
+const MOCK_ID_LIMIT = 1000
 
 const allIds = []
+const idCallCounter = {}
 
 const sleep = (ms) => new Promise((next) => setTimeout(next, ms))
 
@@ -26,7 +27,10 @@ export async function fetchAllIds() {
 
 /** Get data associated with id. */
 export async function fetchDataById(id) {
-  console.log('fetchDataById', id)
+  const N = idCallCounter[id] ?? 1
+  idCallCounter[id] = N + 1
+  if (N > 1) console.warn(`fetchDataById (${N})`, id)
+  else console.log(`fetchDataById`, id)
   await sleep(MOCK_DELAY)
   return {
     id,

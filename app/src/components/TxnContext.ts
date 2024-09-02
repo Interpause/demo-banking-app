@@ -1,3 +1,9 @@
+/** Context for state of transaction list. */
+
+import { createContext, useContext } from 'react'
+
+// TODO: Can transactions be deleted? Need to handle.
+
 export interface TxnData {
   id: string
   amount: number
@@ -18,4 +24,13 @@ export type TxnContextType = {
   txnMap: TxnMap
   /** List of newly added txn ids. */
   newIds: string[]
+}
+
+export const TxnContext = createContext<TxnContextType | null>(null)
+
+/** Hook to access transaction list and related functions. */
+export function useTxn() {
+  const context = useContext(TxnContext)
+  if (!context) throw new Error('useTxn must be used within a TxnProvider.')
+  return context
 }

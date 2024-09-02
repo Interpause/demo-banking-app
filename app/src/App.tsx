@@ -1,6 +1,5 @@
 import { helloWorld } from './api'
-import { TxnProvider } from './components/TxnContext'
-import TxnListDisplay from './components/TxnListDisplay'
+import { TxnListDisplay, TxnProvider } from './components'
 
 function App() {
   const toggleDarkMode = () => {

@@ -4,9 +4,8 @@ import { useCallback, useEffect, useState } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList, ListChildComponentProps } from 'react-window'
 import InfiniteLoader from 'react-window-infinite-loader'
-import { useTxn } from '.'
-import { TxnData } from '../types'
-import TxnCard from './TxnCard'
+import { TxnCard } from './TxnCard'
+import { TxnData, useTxn } from './TxnContext'
 
 const REFRESH_TIMEOUT = 2000
 const ITEM_SIZE_RATIO = 0.1
@@ -43,7 +42,7 @@ function Item({ data: getItemData, index, style }: ItemProps) {
 }
 
 /** Infinite scrolling list of transactions. */
-export default function TxnListDisplay() {
+export function TxnListDisplay() {
   const { refreshList, refreshTxn, txnMap, newIds } = useTxn()
   const txnIds = Object.keys(txnMap)
   // Timeout refresh if no new ids are found.

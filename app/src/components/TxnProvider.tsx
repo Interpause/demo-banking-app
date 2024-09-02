@@ -1,12 +1,8 @@
-/** Context for state of transaction list. */
+/** Context provider for state of transaction list. */
 
-import { createContext, useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { fetchAllIds, fetchDataById } from '../mock'
-import { TxnContextType, TxnMap } from '../types'
-
-export const TxnContext = createContext<TxnContextType | null>(null)
-
-// TODO: Can transactions be deleted? Need to handle.
+import { TxnContext, TxnMap } from './TxnContext'
 
 export interface TxnProviderProps {
   children: React.ReactNode

@@ -1,4 +1,4 @@
-import { TxnData } from '../types'
+import { TxnData } from './TxnContext'
 
 export interface TxnCardProps {
   id: string
@@ -7,7 +7,7 @@ export interface TxnCardProps {
 }
 
 /** Transaction card. */
-export default function TxnCard({ id, txn, refresh }: TxnCardProps) {
+export function TxnCard({ id, txn, refresh }: TxnCardProps) {
   return (
     <div className="flex flex-row justify-between">
       <span>

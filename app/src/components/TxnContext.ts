@@ -1,14 +1,27 @@
 /** Context for state of transaction list. */
 
+import { DateTime } from 'luxon'
 import { createContext, useContext } from 'react'
 
 // TODO: Can transactions be deleted? Need to handle.
 
+export type UUID = string
+
 export interface TxnData {
-  id: string
+  id: UUID
+  counterpartyId: UUID
+  createdAt: DateTime
   amount: number
-  type: 'debit' | 'credit'
-  created: string
+  direction: 'paid' | 'received'
+  repeatCron: null | string // Should be cron-compatible string
+  tags: string[]
+  userNote: string
+
+  // attachmentIds: UUID[]
+  // location: string
+  // method: 'cash' | `card-${UUID}` // TODO: others
+  // Realized you cant actually handle foreign currency if the user is allowed
+  // to change base currency unless you have a db of all exchange rates at the time.
 }
 
 /** List of txns as map of id to txn data, where data is null till loaded. */

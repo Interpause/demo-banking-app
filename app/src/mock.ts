@@ -1,6 +1,7 @@
 /** Generate mock data with loading delay. */
 
-import { TxnData } from './types'
+import { TxnData } from './components'
+import { sleep } from './utils'
 
 const MOCK_DELAY = 1000
 const MOCK_IDS_PER_REFRESH = 50
@@ -8,8 +9,6 @@ const MOCK_ID_LIMIT = 1000
 
 const allIds: string[] = []
 const idCallCounter: Record<string, number> = {}
-
-const sleep = (ms: number) => new Promise((next) => setTimeout(next, ms))
 
 /** Fetch all ids from server. */
 export async function fetchAllIds() {

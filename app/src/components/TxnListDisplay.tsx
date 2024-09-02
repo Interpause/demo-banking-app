@@ -4,11 +4,11 @@ import { useCallback, useEffect, useState } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList, ListChildComponentProps } from 'react-window'
 import InfiniteLoader from 'react-window-infinite-loader'
-import { TxnCard } from './TxnCard'
+import { rem2px } from '../utils'
+import { CARD_HEIGHT_REM, TxnCard } from './TxnCard'
 import { TxnData, useTxn } from './TxnContext'
 
 const REFRESH_TIMEOUT = 2000
-const ITEM_SIZE_RATIO = 0.15
 
 /** Indicator that list is loading more ids. */
 function LoadingIndicatorItem() {
@@ -94,7 +94,7 @@ export function TxnListDisplay() {
             <FixedSizeList
               itemCount={numItems}
               height={height}
-              itemSize={Math.ceil(height * ITEM_SIZE_RATIO)}
+              itemSize={rem2px(CARD_HEIGHT_REM + 1)}
               width={width}
               onItemsRendered={onItemsRendered}
               itemData={getItemData}

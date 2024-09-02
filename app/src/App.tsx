@@ -13,7 +13,7 @@ function App() {
       <h1 className="mt-5 text-center" onClick={toggleDarkMode}>
         Demo Banking App
       </h1>
-      <div className="w-full h-[64rem]">
+      <div className="w-full h-[64rem] px-4">
         <TxnProvider>
           <TxnListDisplay />
         </TxnProvider>

@@ -8,7 +8,7 @@ import { TxnCard } from './TxnCard'
 import { TxnData, useTxn } from './TxnContext'
 
 const REFRESH_TIMEOUT = 2000
-const ITEM_SIZE_RATIO = 0.1
+const ITEM_SIZE_RATIO = 0.15
 
 /** Indicator that list is loading more ids. */
 function LoadingIndicatorItem() {

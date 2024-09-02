@@ -13,12 +13,17 @@ function App() {
       <h1 className="mt-5 text-center" onClick={toggleDarkMode}>
         Demo Banking App
       </h1>
-      <div className="w-full h-96">
+      <div className="w-full h-[64rem]">
         <TxnProvider>
           <TxnListDisplay />
         </TxnProvider>
       </div>
-      <p>{helloWorld()}</p>
+      <p>
+        {helloWorld()}
+        {
+          " This app was made by somehow who literally doesn't do finance tracking so pardon if it seems weird."
+        }
+      </p>
     </div>
   )
 }

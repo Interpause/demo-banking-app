@@ -1,5 +1,7 @@
 /** Generate mock data with loading delay. */
 
+import { DateTime } from 'luxon'
+import { v4 } from 'uuid'
 import { TxnData } from './components'
 import { sleep } from './utils'
 
@@ -10,6 +12,17 @@ const MOCK_ID_LIMIT = 1000
 const allIds: string[] = []
 const idCallCounter: Record<string, number> = {}
 
+const randomTxn = (id: string): TxnData => ({
+  id: id,
+  counterpartyId: v4(),
+  createdAt: DateTime.now(),
+  amount: Math.random() * 1000,
+  direction: Math.random() > 0.5 ? 'paid' : 'received',
+  repeatCron: Math.random() > 0.5 ? '0 0,12 1 */2 *' : null,
+  tags: Math.random() > 0.5 ? ['tag1', 'tag2'] : [],
+  userNote: Math.random() > 0.5 ? 'This is a note' : '',
+})
+
 /** Fetch all ids from server. */
 export async function fetchAllIds() {
   console.log('fetchAllIds')
@@ -17,12 +30,7 @@ export async function fetchAllIds() {
   // Create new ids each time fetch is called.
   const curlen = allIds.length
   if (curlen >= MOCK_ID_LIMIT) return allIds
-  allIds.push(
-    ...Array.from(
-      { length: MOCK_IDS_PER_REFRESH },
-      (_, i) => `id-${curlen + i}`,
-    ),
-  )
+  allIds.push(...Array.from({ length: MOCK_IDS_PER_REFRESH }, () => v4()))
   return allIds
 }
 
@@ -33,22 +41,12 @@ export async function fetchDataById(id: string): Promise<TxnData> {
   if (N > 1) console.warn(`fetchDataById (${N})`, id)
   else console.log(`fetchDataById`, id)
   await sleep(MOCK_DELAY)
-  return {
-    id,
-    amount: Math.random() * 1000,
-    type: Math.random() > 0.5 ? 'debit' : 'credit',
-    created: new Date().toISOString(),
-  }
+  return randomTxn(id)
 }
 
 /** Get associated data for each id in list. */
 export async function fetchDataByIds(ids: string[]): Promise<TxnData[]> {
   console.log('fetchDataByIds', ids)
   await sleep(MOCK_DELAY)
-  return ids.map((id) => ({
-    id,
-    amount: Math.random() * 1000,
-    type: Math.random() > 0.5 ? 'debit' : 'credit',
-    created: new Date().toISOString(),
-  }))
+  return ids.map(randomTxn)
 }

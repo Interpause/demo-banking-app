@@ -9,8 +9,11 @@ function App() {
   }
 
   return (
-    <div className="absolute inset-0 m-auto prose flex flex-col">
-      <h1 className="mt-5 text-center" onClick={toggleDarkMode}>
+    <div className="absolute inset-0 flex flex-col items-center">
+      <h1
+        className="mt-5 text-center text-3xl font-bold"
+        onClick={toggleDarkMode}
+      >
         Demo Banking App
       </h1>
       <div className="w-full h-[64rem] px-4">
@@ -18,12 +21,14 @@ function App() {
           <TxnListDisplay />
         </TxnProvider>
       </div>
-      <p>
-        {helloWorld()}
-        {
-          " This app was made by somehow who literally doesn't do finance tracking so pardon if it seems weird."
-        }
-      </p>
+      <div className="prose">
+        <p>
+          {helloWorld()}
+          {
+            " This app was made by somehow who literally doesn't do finance tracking so pardon if it seems weird."
+          }
+        </p>
+      </div>
     </div>
   )
 }

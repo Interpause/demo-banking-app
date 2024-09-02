@@ -4,16 +4,18 @@ import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import globals from 'globals'
+import tseslint from 'typescript-eslint'
 
-export default [
+export default tseslint.config(
   // Global ignore list.
   { ignores: ['app/dist/'] },
   // Default eslint config shared for all workspaces.
   eslint.configs.recommended,
+  ...tseslint.configs.recommended,
 
   // Eslint config for the app workspace.
   {
-    files: ['app/**/*.{js,jsx}'],
+    files: ['app/**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
@@ -44,4 +46,4 @@ export default [
 
   // Disable eslint rules that conflict with prettier.
   prettierConfig,
-]
+)

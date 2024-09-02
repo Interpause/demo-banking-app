@@ -1,7 +1,7 @@
 import twtypography from '@tailwindcss/typography'
 import daisyui from 'daisyui'
+import type { Config } from 'tailwindcss'
 
-/** @type {import('tailwindcss').Config} */
 export default {
   darkMode: ['selector', '[data-theme="dark"]'],
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
@@ -12,4 +12,4 @@ export default {
   daisyui: {
     themes: false,
   },
-}
+} satisfies Config

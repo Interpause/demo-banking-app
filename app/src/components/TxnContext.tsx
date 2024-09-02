@@ -1,24 +1,23 @@
 /** Context for state of transaction list. */
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { createContext, useCallback, useEffect, useState } from 'react'
 import { fetchAllIds, fetchDataById } from '../mock'
+import { TxnContextType, TxnMap } from '../types'
 
-const TxnContext = createContext(null)
+export const TxnContext = createContext<TxnContextType | null>(null)
 
 // TODO: Can transactions be deleted? Need to handle.
 
+export interface TxnProviderProps {
+  children: React.ReactNode
+}
+
 /** Context provider for transaction list and other related functions. */
-export function TxnProvider({ children }) {
+export function TxnProvider({ children }: TxnProviderProps) {
   // List of all txns as map of id to txn data, where data is null till loaded.
-  const [txnMap, setTxnMap] = useState({})
+  const [txnMap, setTxnMap] = useState<TxnMap>({})
   // List of newly added txn ids to fetch txn data for.
-  const [newIds, setNewIds] = useState([])
+  const [newIds, setNewIds] = useState<string[]>([])
   // Request for refresh. Starts as true to fetch initial list.
   const [hasRefreshRequest, setHasRefreshRequest] = useState(true)
   // Txn ids already known of.
@@ -28,7 +27,7 @@ export function TxnProvider({ children }) {
   const refreshList = useCallback(() => setHasRefreshRequest(true), [])
 
   // Function passed to consumers to refresh specific txn by id.
-  const refreshTxn = useCallback(async (id) => {
+  const refreshTxn = useCallback(async (id: string) => {
     setTxnMap((prev) => ({ ...prev, [id]: null }))
     const txn = await fetchDataById(id)
     setTxnMap((prev) => ({ ...prev, [id]: txn }))
@@ -36,7 +35,7 @@ export function TxnProvider({ children }) {
 
   // Refresh transaction list.
   useEffect(() => {
-    if (!hasRefreshRequest) return
+    if (!hasRefreshRequest) return () => {}
     let cancelled = false
     ;(async () => {
       // TODO: handle error here.
@@ -94,12 +93,4 @@ export function TxnProvider({ children }) {
       {children}
     </TxnContext.Provider>
   )
-}
-
-/** Hook to access transaction list and related functions. */
-// eslint-disable-next-line react-refresh/only-export-components
-export function useTxn() {
-  const context = useContext(TxnContext)
-  if (!context) throw new Error('useTxn must be used within a TxnProvider.')
-  return context
 }

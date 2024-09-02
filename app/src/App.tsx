@@ -1,3 +1,4 @@
+import { helloWorld } from './api'
 import { TxnProvider } from './components/TxnContext'
 import TxnListDisplay from './components/TxnListDisplay'
 
@@ -18,6 +19,7 @@ function App() {
           <TxnListDisplay />
         </TxnProvider>
       </div>
+      <p>{helloWorld()}</p>
     </div>
   )
 }

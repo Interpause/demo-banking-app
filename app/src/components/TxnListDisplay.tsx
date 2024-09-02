@@ -2,10 +2,11 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
-import { FixedSizeList } from 'react-window'
+import { FixedSizeList, ListChildComponentProps } from 'react-window'
 import InfiniteLoader from 'react-window-infinite-loader'
+import { useTxn } from '.'
+import { TxnData } from '../types'
 import TxnCard from './TxnCard'
-import { useTxn } from './TxnContext'
 
 const REFRESH_TIMEOUT = 2000
 const ITEM_SIZE_RATIO = 0.1
@@ -17,8 +18,16 @@ function LoadingIndicatorItem() {
   )
 }
 
+type ItemDataGetter = (index: number) => {
+  id: string | undefined
+  txn: TxnData | null
+  refresh: (id: string) => void
+}
+
+interface ItemProps extends ListChildComponentProps<ItemDataGetter> {}
+
 /** List item. */
-function Item({ data: getItemData, index, style }) {
+function Item({ data: getItemData, index, style }: ItemProps) {
   const { id, txn, refresh } = getItemData(index)
 
   return (
@@ -44,17 +53,17 @@ export default function TxnListDisplay() {
 
   // Item is loaded if its index is within bounds.
   const isItemLoaded = useCallback(
-    (index) => index < txnIds.length,
+    (index: number) => index < txnIds.length,
     [txnIds.length],
   )
 
   // Use by Item to get data for item at index.
-  const getItemData = useCallback(
-    (index) => {
+  const getItemData = useCallback<ItemDataGetter>(
+    (index: number) => {
       const id = txnIds[index]
       return {
         id,
-        txn: txnMap[id],
+        txn: id ? (txnMap[id] ?? null) : null,
         refresh: refreshTxn,
       }
     },

@@ -33,7 +33,7 @@ function Item({ data: getItemData, index, style }: ItemProps) {
   const { txnId, ...props } = getItemData(index)
 
   return (
-    <div style={style}>
+    <div className="my-2" style={style}>
       {
         txnId ?
           <TxnCardItem txnId={txnId} {...props} />
@@ -100,7 +100,7 @@ export function TxnListDisplay() {
             <FixedSizeList
               itemCount={numItems}
               height={height}
-              itemSize={rem2px(CARD_HEIGHT_REM + 0.5)}
+              itemSize={rem2px(CARD_HEIGHT_REM + 1)}
               width={width}
               onItemsRendered={onItemsRendered}
               itemData={getItemData}

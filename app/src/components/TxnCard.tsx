@@ -16,22 +16,36 @@ import { useTxnStore } from './TxnStoreContext'
 
 export const CARD_HEIGHT_REM = 4
 
-interface TxnDetailsProps extends Omit<TxnData, 'id'> {
-  txnId: string
-}
-
-interface TxnDirectionArrowProps extends ComponentProps<'svg'> {
+export interface TxnDirectionArrowProps extends ComponentProps<'svg'> {
   direction: TxnData['direction']
 }
 
-function TxnDirectionArrow({ direction, className }: TxnDirectionArrowProps) {
+export function TxnDirectionArrow({
+  direction,
+  className,
+}: TxnDirectionArrowProps) {
   switch (direction) {
     case 'paid':
-      return <FaCircleArrowRight className={`text-red-500 ${className}`} />
+      return (
+        <FaCircleArrowRight
+          title={direction}
+          className={`text-red-500 ${className}`}
+        />
+      )
     case 'received':
-      return <FaCircleArrowLeft className={`text-green-500 ${className}`} />
+      return (
+        <FaCircleArrowLeft
+          title={direction}
+          className={`text-green-500 ${className}`}
+        />
+      )
     default:
-      return <FaCircleQuestion className={`text-gray-500 ${className}`} />
+      return (
+        <FaCircleQuestion
+          title={direction}
+          className={`text-gray-500 ${className}`}
+        />
+      )
   }
 }
 
@@ -45,6 +59,10 @@ function TxnTagsBar({ tags }: { tags: string[] }) {
       ))}
     </div>
   )
+}
+
+interface TxnDetailsProps extends Omit<TxnData, 'id'> {
+  txnId: string
 }
 
 function TxnDetailsMini({

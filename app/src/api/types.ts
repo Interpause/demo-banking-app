@@ -12,6 +12,7 @@ export interface TxnData {
   tags: string[]
   userNote: string
 
+  // occurredAt: DateTime // TODO: implement
   // attachmentIds: UUID[]
   // location: string
   // method: 'cash' | `card-${UUID}` // TODO: others

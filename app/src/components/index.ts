@@ -1,3 +1,4 @@
+export { default as Toaster } from './Toaster'
 export { TxnCard } from './TxnCard'
 export type { TxnCardProps } from './TxnCard'
 export { TxnListDisplay } from './TxnListDisplay'

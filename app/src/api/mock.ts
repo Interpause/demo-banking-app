@@ -21,7 +21,8 @@ const randomTxn = (id: string): TxnData => ({
   amount: Math.random() * 1000,
   direction: Math.random() > 0.5 ? 'paid' : 'received',
   repeatCron: Math.random() > 0.5 ? '0 0,12 1 */2 *' : null,
-  tags: Math.random() > 0.5 ? ['tag1', 'tag2'] : [],
+  tags:
+    Math.random() > 0.5 ? ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', 'tag6'] : [],
   userNote: Math.random() > 0.5 ? 'This is a note' : '',
 })
 

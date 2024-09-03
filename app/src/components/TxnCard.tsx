@@ -34,9 +34,9 @@ function TxnDirectionArrow({ direction, className }: TxnDirectionArrowProps) {
 
 function TxnTagsBar({ tags }: { tags: string[] }) {
   return (
-    <div className="flex gap-1">
+    <div className="flex flex-nowrap py-1 snap-x snap-mandatory overflow-x-auto gap-1">
       {tags.map((tag) => (
-        <span key={tag} className="badge badge-ghost">
+        <span key={tag} className="badge badge-ghost snap-start">
           {tag}
         </span>
       ))}
@@ -51,12 +51,14 @@ function TxnDetailsMini({
   counterpartyId,
 }: TxnDetailsProps) {
   return (
-    <div className="flex gap-1">
+    <div className="flex w-full gap-1 items-center">
       <span>{`$${amount.toFixed(2)}`}</span>
       <TxnTagsBar tags={tags} />
       <div className="flex-grow" />
-      <TxnDirectionArrow direction={direction} className="inline self-center" />
-      <span className="font-mono truncate w-[4.5rem]">{counterpartyId}</span>
+      <TxnDirectionArrow direction={direction} className="inline flex-none" />
+      <span className="flex-none truncate w-[4.5rem] font-mono">
+        {counterpartyId}
+      </span>
     </div>
   )
 }
@@ -126,26 +128,28 @@ export function TxnCard({ id, txn, refresh, edit, del }: TxnCardProps) {
   }
 
   return (
-    <div className="flex justify-center">
+    <div
+      className={`flex justify-center group ${isExpanded ? 'expanded' : ''}`}
+    >
       <div
         className={`card card-compact card-bordered
-          w-[36rem] bg-base-100 shadow-md
+          max-w-full w-[36rem] bg-base-100 shadow-md
           transition-all overflow-clip`}
         style={expandStyle}
       >
         <div className="card-body gap-0">
-          <div className="card-actions justify-start">
-            <div className="self-center flex-grow">
+          <div className="card-actions justify-start flex-nowrap items-center">
+            <div className="flex-1 min-w-0">
               {shouldShowMini && <TxnDetailsMini {...txn} />}
               {shouldShowMore && (
-                <span className="font-mono text-base-300 hover:text-base-content">
-                  {`Transaction: ${id}`}
+                <span className="font-mono truncate text-base-300 hover:text-base-content">
+                  {id}
                 </span>
               )}
               {/*Display indicator that txn data is being loaded.*/}
-              {txn === null && <progress className="progress w-56"></progress>}
+              {txn === null && <progress className="progress"></progress>}
             </div>
-            <div className="join">
+            <div className="join hidden sm:block group-[.expanded]:block">
               <button
                 className="btn btn-square btn-sm join-item"
                 title="Refresh"
@@ -168,14 +172,20 @@ export function TxnCard({ id, txn, refresh, edit, del }: TxnCardProps) {
                 <FaRegTrashCan />
               </button>
               <button
-                className="btn btn-square btn-sm join-item data-[expanded=true]:btn-primary"
+                className="btn btn-square btn-sm join-item group-[.expanded]:btn-primary"
                 title="Expand"
                 onClick={() => setIsExpanded(!isExpanded)}
-                data-expanded={isExpanded}
               >
                 <FaExpand />
               </button>
             </div>
+            <button
+              className="sm:hidden btn btn-square btn-sm group-[.expanded]:hidden"
+              title="Expand"
+              onClick={() => setIsExpanded(!isExpanded)}
+            >
+              <FaExpand />
+            </button>
           </div>
           {shouldShowMore && <TxnDetailsMore {...txn} />}
         </div>

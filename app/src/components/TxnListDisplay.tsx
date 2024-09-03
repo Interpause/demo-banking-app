@@ -4,9 +4,10 @@ import { useCallback, useEffect, useState } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList, ListChildComponentProps } from 'react-window'
 import InfiniteLoader from 'react-window-infinite-loader'
+import { TxnData } from '../api'
 import { rem2px } from '../utils'
 import { CARD_HEIGHT_REM, TxnCard } from './TxnCard'
-import { TxnData, useTxn } from './TxnContext'
+import { useTxn } from './TxnContext'
 
 const REFRESH_TIMEOUT = 2000
 

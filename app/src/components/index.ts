@@ -1,7 +1,7 @@
 export { TxnCard } from './TxnCard'
 export type { TxnCardProps } from './TxnCard'
 export { useTxn } from './TxnContext'
-export type { TxnContextType, TxnData, TxnMap } from './TxnContext'
+export type { TxnContextType, TxnMap } from './TxnContext'
 export { TxnListDisplay } from './TxnListDisplay'
 export { TxnProvider } from './TxnProvider'
 export type { TxnProviderProps } from './TxnProvider'

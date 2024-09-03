@@ -1,4 +1,3 @@
-import { helloWorld } from './api'
 import { TxnListDisplay, TxnProvider } from './components'
 
 function App() {
@@ -23,10 +22,8 @@ function App() {
       </div>
       <div className="prose">
         <p>
-          {helloWorld()}
-          {
-            " This app was made by somehow who literally doesn't do finance tracking so pardon if it seems weird."
-          }
+          {`This app was made by somehow who literally doesn't do finance tracking
+          so pardon if it seems weird.`}
         </p>
       </div>
     </div>

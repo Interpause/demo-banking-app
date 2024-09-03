@@ -8,7 +8,7 @@ import {
   FaCircleQuestion,
   FaExpand,
 } from 'react-icons/fa6'
-import { TxnData } from './TxnContext'
+import { TxnData } from '../api'
 
 export const CARD_HEIGHT_REM = 4
 export const CARD_EXPANDED_HEIGHT_REM = 10

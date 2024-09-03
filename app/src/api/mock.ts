@@ -2,8 +2,9 @@
 
 import { DateTime } from 'luxon'
 import { v4 } from 'uuid'
-import { TxnData } from './components'
-import { sleep } from './utils'
+import { TxnData } from '../api'
+import { sleep } from '../utils'
+import { ApiInterface } from './types'
 
 const MOCK_DELAY = 1000
 const MOCK_IDS_PER_REFRESH = 50
@@ -24,7 +25,7 @@ const randomTxn = (id: string): TxnData => ({
 })
 
 /** Fetch all ids from server. */
-export async function fetchAllIds() {
+async function fetchAllIds() {
   console.log('fetchAllIds')
   await sleep(MOCK_DELAY)
   // Create new ids each time fetch is called.
@@ -35,7 +36,7 @@ export async function fetchAllIds() {
 }
 
 /** Get data associated with id. */
-export async function fetchDataById(id: string): Promise<TxnData> {
+async function fetchDataById(id: string): Promise<TxnData> {
   const N = idCallCounter[id] ?? 1
   idCallCounter[id] = N + 1
   if (N > 1) console.warn(`fetchDataById (${N})`, id)
@@ -45,8 +46,14 @@ export async function fetchDataById(id: string): Promise<TxnData> {
 }
 
 /** Get associated data for each id in list. */
-export async function fetchDataByIds(ids: string[]): Promise<TxnData[]> {
+async function fetchDataByIds(ids: string[]): Promise<TxnData[]> {
   console.log('fetchDataByIds', ids)
   await sleep(MOCK_DELAY)
   return ids.map(randomTxn)
 }
+
+export default {
+  fetchAllIds,
+  fetchDataById,
+  fetchDataByIds,
+} satisfies ApiInterface

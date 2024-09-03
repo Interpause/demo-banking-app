@@ -1,7 +1,7 @@
 /** Context provider for state of transaction list. */
 
 import { useCallback, useEffect, useState } from 'react'
-import { fetchAllIds, fetchDataById } from '../mock'
+import { fetchAllIds, fetchDataById } from '../api'
 import { TxnContext, TxnMap } from './TxnContext'
 
 export interface TxnProviderProps {

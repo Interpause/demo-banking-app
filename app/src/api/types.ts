@@ -6,6 +6,7 @@ export interface TxnData {
   id: UUID
   counterpartyId: UUID
   createdAt: DateTime
+  name: string
   amount: number
   direction: 'paid' | 'received'
   repeatCron: null | string // Should be cron-compatible string

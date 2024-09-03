@@ -18,6 +18,7 @@ const randomTxn = (id: string): TxnData => ({
   id,
   counterpartyId: v4(),
   createdAt: DateTime.now(),
+  name: 'Transaction Name',
   amount: Math.random() * 1000,
   direction: Math.random() > 0.5 ? 'paid' : 'received',
   repeatCron: Math.random() > 0.5 ? '0 0,12 1 */2 *' : null,

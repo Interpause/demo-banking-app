@@ -52,6 +52,10 @@ function convertFormData(fd: FormData): TxnDataNoId {
   // createdAt
   const createdAt = DateTime.now()
 
+  // name
+  const name = ((fd.get('name') as string | null) ?? '').trim()
+  if (name === '') throw new Error('Name is required.')
+
   // amount
   const amount = parseFloat((fd.get('amount') as string | null) ?? '')
   if (isNaN(amount)) throw new Error('Amount is not a valid number.')
@@ -86,6 +90,7 @@ function convertFormData(fd: FormData): TxnDataNoId {
   return {
     counterpartyId,
     createdAt,
+    name,
     amount,
     direction,
     repeatCron,
@@ -166,7 +171,26 @@ export function TxnEditor({ open, onClose, onSubmit }: TxnEditorProps) {
     <dialog ref={dialogRef} className="modal modal-bottom sm:modal-middle z-10">
       <form ref={formRef} className="modal-box" onSubmit={handleFormSubmit}>
         <h3 className="font-bold text-lg">{` Transaction`}</h3>
-        <div className="form-control gap-2">
+        <div className="form-control gap-2 mt-2">
+          <div className="flex items-center gap-2 text-lg">
+            <input
+              type="text"
+              className="input input-bordered input-sm flex-auto min-w-0"
+              title="Name"
+              name="name"
+              placeholder="Short Descriptive Name..."
+              required
+            />
+            <input
+              type="text"
+              className="input input-bordered input-sm flex-auto min-w-0"
+              title="Cron Expression"
+              name="repeatCron"
+              placeholder="Cron Expression..."
+              size={4}
+            />
+          </div>
+
           <div className="flex items-center gap-1.5 text-lg">
             <input
               type="number"
@@ -177,6 +201,7 @@ export function TxnEditor({ open, onClose, onSubmit }: TxnEditorProps) {
               title="Amount"
               name="amount"
               placeholder="Amount"
+              required
             />
             <input
               ref={dirToggleRef}
@@ -209,15 +234,8 @@ export function TxnEditor({ open, onClose, onSubmit }: TxnEditorProps) {
               })}
             </select>
           </div>
+
           <div className="flex items-center gap-2 text-lg">
-            <input
-              type="text"
-              className="input input-bordered input-sm flex-auto min-w-0"
-              title="Cron Expression"
-              name="repeatCron"
-              placeholder="Cron Expression..."
-              size={4}
-            />
             <input
               type="text"
               className="input input-bordered input-sm flex-auto min-w-0"
@@ -226,12 +244,13 @@ export function TxnEditor({ open, onClose, onSubmit }: TxnEditorProps) {
               placeholder="tag1, tag2, tag3, ..."
             />
           </div>
+
           <textarea
             className="textarea textarea-bordered textarea-xs"
             title="User Note"
             name="userNote"
             placeholder="Any notes?"
-          ></textarea>
+          />
         </div>
         <div className="modal-action">
           <button type="submit" className="btn btn-sm btn-primary">

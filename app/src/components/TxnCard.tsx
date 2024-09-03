@@ -11,10 +11,9 @@ import {
   FaRegTrashCan,
 } from 'react-icons/fa6'
 import { TxnData } from '../api'
-import { rem2px } from '../utils'
 import { useTxnStore } from './TxnStoreContext'
 
-export const CARD_HEIGHT_REM = 4
+export const CARD_HEIGHT_REM = 6
 
 export interface TxnDirectionArrowProps extends ComponentProps<'svg'> {
   direction: TxnData['direction']
@@ -51,7 +50,7 @@ export function TxnDirectionArrow({
 
 function TxnTagsBar({ tags }: { tags: string[] }) {
   return (
-    <div className="flex flex-nowrap py-1 snap-x snap-mandatory overflow-x-auto gap-1">
+    <div className="flex flex-nowrap py-1 snap-x snap-mandatory overflow-x-auto gap-1 font-light">
       {tags.map((tag) => (
         <span key={tag} className="badge badge-ghost snap-start">
           {tag}
@@ -73,18 +72,19 @@ function TxnDetailsMini({
 }: TxnDetailsProps) {
   return (
     <div className="flex w-full gap-1 items-center">
-      <span>{`$${amount.toFixed(2)}`}</span>
-      <TxnTagsBar tags={tags} />
-      <div className="flex-grow" />
+      <span className="font-black">{`$${amount.toFixed(2)}`}</span>
       <TxnDirectionArrow direction={direction} className="inline flex-none" />
       <span className="flex-none truncate w-[4.5rem] font-mono">
         {counterpartyId}
       </span>
+      <div className="flex-grow" />
+      <TxnTagsBar tags={tags} />
     </div>
   )
 }
 
 function TxnDetailsMore({
+  txnId,
   amount,
   createdAt,
   counterpartyId,
@@ -120,6 +120,9 @@ function TxnDetailsMore({
       {cronMsg && <span>{cronMsg}</span>}
       <div className="flex-grow" />
       <TxnTagsBar tags={tags} />
+      <span className="font-mono truncate text-base-300 hover:text-base-content">
+        {`Transaction id: ${txnId}`}
+      </span>
     </div>
   )
 }
@@ -161,7 +164,8 @@ export function TxnCardItem({
   del,
 }: TxnCardItemProps) {
   const [isExpanded, setIsExpanded] = useState(false)
-  const divRef = useRef<HTMLDivElement>(null)
+  const cardRef = useRef<HTMLDivElement>(null)
+  const innerRef = useRef<HTMLDivElement>(null)
 
   const shouldExpand = txn && isExpanded
   const shouldShowMore = txn && shouldExpand
@@ -172,15 +176,16 @@ export function TxnCardItem({
   }, [expanded])
 
   useEffect(() => {
-    const divElm = divRef.current
-    if (!divElm) return
+    const cardElm = cardRef.current
+    const innerElm = innerRef.current
+    if (!cardElm || !innerElm) return
 
-    divElm.style.zIndex = '1'
-    divElm.style.height = `${shouldExpand ? divElm.scrollHeight : rem2px(CARD_HEIGHT_REM)}px`
+    cardElm.style.zIndex = '1'
+    cardElm.style.height = `${innerElm.scrollHeight}px`
 
     // NOTE: Should match whatever transition duration is set by tailwind.
     const timeout = setTimeout(() => {
-      divElm.style.zIndex = shouldExpand ? '1' : ''
+      cardElm.style.zIndex = shouldExpand ? '1' : ''
     }, 200)
     return () => clearTimeout(timeout)
   }, [shouldExpand])
@@ -193,62 +198,65 @@ export function TxnCardItem({
         className={`card card-compact card-bordered
           max-w-full w-[36rem] bg-base-100 shadow-md
           transition-[height] duration-200 overflow-clip`}
-        ref={divRef}
+        ref={cardRef}
       >
-        <div className="card-body gap-0">
-          <div className="card-actions justify-start flex-nowrap items-center">
-            <div className="flex-1 min-w-0">
-              {shouldShowMini && <TxnDetailsMini {...txn} txnId={txnId} />}
-              {shouldShowMore && (
-                <span className="font-mono truncate text-base-300 hover:text-base-content">
-                  {txnId}
-                </span>
-              )}
-              {/*Display indicator that txn data is being loaded.*/}
-              {txn === null && <progress className="progress"></progress>}
-            </div>
-            <div className="join hidden sm:block group-[.expanded]:block">
+        <div ref={innerRef}>
+          <div className="card-body gap-0">
+            <div className="card-actions justify-start flex-nowrap items-center">
+              <div className="flex flex-1 min-w-0">
+                {txn === null ?
+                  // Display indicator that txn data is being loaded.
+                  <progress className="progress" />
+                : <span className="flex-1 min-w-0 truncate">
+                    <span className="font-light">{`(${txn.createdAt.toFormat('yyyy-MM-dd')})`}</span>
+                    <span className="font-medium">{`\t${txn.name}`}</span>
+                  </span>
+                }
+              </div>
+              <div className="join hidden sm:block group-[.expanded]:block">
+                <button
+                  className="btn btn-square btn-sm join-item"
+                  title="Refresh"
+                  disabled={!txn}
+                  onClick={() => refresh(txnId)}
+                >
+                  <FaArrowRotateRight />
+                </button>
+                <button
+                  className="btn btn-square btn-sm join-item"
+                  title="Edit"
+                  disabled={!txn}
+                  onClick={() => edit(txnId)}
+                >
+                  <FaPenToSquare />
+                </button>
+                <button
+                  className="btn btn-square btn-sm join-item"
+                  title="Delete"
+                  disabled={!txn}
+                  onClick={() => del(txnId)}
+                >
+                  <FaRegTrashCan />
+                </button>
+                <button
+                  className="btn btn-square btn-sm join-item group-[.expanded]:btn-primary"
+                  title="Expand"
+                  onClick={() => setIsExpanded(!isExpanded)}
+                >
+                  <FaExpand />
+                </button>
+              </div>
               <button
-                className="btn btn-square btn-sm join-item"
-                title="Refresh"
-                disabled={!txn}
-                onClick={() => refresh(txnId)}
-              >
-                <FaArrowRotateRight />
-              </button>
-              <button
-                className="btn btn-square btn-sm join-item"
-                title="Edit"
-                disabled={!txn}
-                onClick={() => edit(txnId)}
-              >
-                <FaPenToSquare />
-              </button>
-              <button
-                className="btn btn-square btn-sm join-item"
-                title="Delete"
-                disabled={!txn}
-                onClick={() => del(txnId)}
-              >
-                <FaRegTrashCan />
-              </button>
-              <button
-                className="btn btn-square btn-sm join-item group-[.expanded]:btn-primary"
+                className="sm:hidden btn btn-square btn-sm group-[.expanded]:hidden"
                 title="Expand"
                 onClick={() => setIsExpanded(!isExpanded)}
               >
                 <FaExpand />
               </button>
             </div>
-            <button
-              className="sm:hidden btn btn-square btn-sm group-[.expanded]:hidden"
-              title="Expand"
-              onClick={() => setIsExpanded(!isExpanded)}
-            >
-              <FaExpand />
-            </button>
+            {shouldShowMini && <TxnDetailsMini {...txn} txnId={txnId} />}
+            {shouldShowMore && <TxnDetailsMore {...txn} txnId={txnId} />}
           </div>
-          {shouldShowMore && <TxnDetailsMore {...txn} txnId={txnId} />}
         </div>
       </div>
     </div>

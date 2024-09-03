@@ -1,6 +1,6 @@
 import cronstrue from 'cronstrue'
 import { DateTime } from 'luxon'
-import { ComponentProps, useState } from 'react'
+import { ComponentProps, useEffect, useRef, useState } from 'react'
 import {
   FaArrowRotateRight,
   FaCircleArrowLeft,
@@ -11,9 +11,9 @@ import {
   FaRegTrashCan,
 } from 'react-icons/fa6'
 import { TxnData } from '../api'
+import { rem2px } from '../utils'
 
 export const CARD_HEIGHT_REM = 4
-export const CARD_EXPANDED_HEIGHT_REM = 10
 
 interface TxnDetailsProps extends TxnData {}
 
@@ -114,6 +114,7 @@ export interface TxnCardProps {
 /** Transaction card. */
 export function TxnCard({ id, txn, refresh, edit, del }: TxnCardProps) {
   const [isExpanded, setIsExpanded] = useState(false)
+  const divRef = useRef<HTMLDivElement>(null)
 
   const refreshId = txn ? () => refresh(id) : undefined
   const editId = txn ? () => edit(id) : undefined
@@ -122,10 +123,19 @@ export function TxnCard({ id, txn, refresh, edit, del }: TxnCardProps) {
   const shouldShowMore = txn && shouldExpand
   const shouldShowMini = txn && !shouldExpand
 
-  const expandStyle = {
-    height: `${shouldExpand ? CARD_EXPANDED_HEIGHT_REM : CARD_HEIGHT_REM}rem`,
-    zIndex: shouldExpand ? 1 : undefined,
-  }
+  useEffect(() => {
+    const divElm = divRef.current
+    if (!divElm) return
+
+    divElm.style.zIndex = '1'
+    divElm.style.height = `${shouldExpand ? divElm.scrollHeight : rem2px(CARD_HEIGHT_REM)}px`
+
+    // NOTE: Should match whatever transition duration is set by tailwind.
+    const timeout = setTimeout(() => {
+      divElm.style.zIndex = shouldExpand ? '1' : ''
+    }, 200)
+    return () => clearTimeout(timeout)
+  }, [shouldExpand])
 
   return (
     <div
@@ -134,8 +144,8 @@ export function TxnCard({ id, txn, refresh, edit, del }: TxnCardProps) {
       <div
         className={`card card-compact card-bordered
           max-w-full w-[36rem] bg-base-100 shadow-md
-          transition-all overflow-clip`}
-        style={expandStyle}
+          transition-[height] duration-200 overflow-clip`}
+        ref={divRef}
       >
         <div className="card-body gap-0">
           <div className="card-actions justify-start flex-nowrap items-center">

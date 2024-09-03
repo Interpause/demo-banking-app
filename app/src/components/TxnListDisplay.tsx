@@ -100,7 +100,7 @@ export function TxnListDisplay() {
             <FixedSizeList
               itemCount={numItems}
               height={height}
-              itemSize={rem2px(CARD_HEIGHT_REM + 1)}
+              itemSize={rem2px(CARD_HEIGHT_REM + 0.5)}
               width={width}
               onItemsRendered={onItemsRendered}
               itemData={getItemData}

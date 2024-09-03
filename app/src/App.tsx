@@ -1,22 +1,42 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { FaPlus } from 'react-icons/fa6'
-import { txnCreate } from './api'
-import { TxnDataNoId } from './api/types'
-import { Toaster, TxnListDisplay, TxnStoreProvider } from './components'
+import { txnCreate, TxnData, TxnDataNoId, txnUpdateById } from './api'
+import {
+  Toaster,
+  TxnListDisplay,
+  TxnStoreProvider,
+  useTxnStore,
+} from './components'
 import { TxnEditor } from './components/TxnEditor'
 
 function MainPage() {
   const [isEditorOpen, setIsEditorOpen] = useState(false)
+  const [initialTxn, setInitialTxn] = useState<TxnData>()
+  const { editorLauncherRef } = useTxnStore()
 
   const toggleDarkMode = () => {
     localStorage.theme =
       document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'
     document.documentElement.dataset.theme = localStorage.theme
   }
-  const editorSubmit = (txn?: TxnDataNoId) => {
+  const editorSubmit = (txn?: TxnData | TxnDataNoId) => {
     // console.log('Submit', txn)
-    if (txn)
+    setIsEditorOpen(false)
+    if (!txn) return
+    // NOTE: typescript limitation
+    const castedTxn = txn as TxnData
+    if (castedTxn.id)
+      toast
+        .promise(txnUpdateById(castedTxn.id, txn), {
+          loading: 'Updating...',
+          success: `Updated "${txn.name}"!`,
+          error: `Failed to update "${txn.name}".`,
+        })
+        .catch((e) => {
+          console.error('Failed to update txn.', e)
+        })
+    else
       toast
         .promise(txnCreate(txn), {
           loading: 'Submitting...',
@@ -26,9 +46,21 @@ function MainPage() {
         .catch((e) => {
           console.error('Failed to create txn.', e)
         })
-
-    setIsEditorOpen(false)
   }
+
+  const launchEditor = useCallback((txn?: TxnData) => {
+    setInitialTxn(txn)
+    if (txn) setIsEditorOpen(true)
+  }, [])
+
+  useEffect(() => {
+    editorLauncherRef.current = launchEditor
+  }, [editorLauncherRef, launchEditor])
+
+  useEffect(() => {
+    if (isEditorOpen) return
+    setInitialTxn(undefined)
+  }, [isEditorOpen])
 
   return (
     <div className="absolute inset-0 flex flex-col items-center">
@@ -67,6 +99,7 @@ function MainPage() {
 
       <TxnEditor
         open={isEditorOpen}
+        initialData={initialTxn}
         onClose={() => setIsEditorOpen(false)}
         onSubmit={editorSubmit}
       />

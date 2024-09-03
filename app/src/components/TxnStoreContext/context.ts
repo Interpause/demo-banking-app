@@ -1,10 +1,12 @@
 /** Context for state of transaction list. */
 
-import { createContext, useContext } from 'react'
-import { TxnData } from '../../api'
+import { createContext, MutableRefObject, useContext } from 'react'
+import { TxnData, TxnDataOrNull } from '../../api'
 
 /** List of txns as map of id to txn data, where data is null till loaded. */
-export type TxnMap = Record<string, TxnData | null>
+export type TxnMap = Record<string, TxnDataOrNull>
+
+export type EditorLauncher = (txn?: TxnData) => void
 
 /** Type for TxnContext. */
 export type TxnStoreType = {
@@ -16,6 +18,8 @@ export type TxnStoreType = {
   deleteTxn: (id: string) => void
   /** Function passed to consumers to trigger edit mode for txn by id. */
   editTxn: (id: string) => void
+  /** Set function to open editor with initial txn data. */
+  editorLauncherRef: MutableRefObject<EditorLauncher>
   /** List of txns as map of id to txn data, where data is null till loaded. */
   txnMap: TxnMap
   /** List of newly added txn ids. */

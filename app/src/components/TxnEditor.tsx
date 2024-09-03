@@ -2,8 +2,8 @@ import cronstrue from 'cronstrue'
 import { DateTime } from 'luxon'
 import { FormEvent, useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
+import { TxnData, TxnDataNoId } from '../api'
 import { TEMP_getPartyPic, TEMP_HARDCODED_ACCOUNTS } from '../api/mock'
-import { TxnDataNoId } from '../api/types'
 import Toaster from './Toaster'
 import { TxnDirectionArrow } from './TxnCard'
 
@@ -69,12 +69,18 @@ function convertFormData(fd: FormData): TxnDataNoId {
 
 export interface TxnEditorProps {
   open: boolean
+  initialData?: TxnData
   onClose: () => void
-  onSubmit: (txn: TxnDataNoId) => void
+  onSubmit: (txn: TxnData | TxnDataNoId) => void
 }
 
 /** Transaction editor. */
-export function TxnEditor({ open, onClose, onSubmit }: TxnEditorProps) {
+export function TxnEditor({
+  open,
+  initialData,
+  onClose,
+  onSubmit,
+}: TxnEditorProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
   const selectedPartyRef = useRef<HTMLSelectElement>(null)
@@ -90,7 +96,8 @@ export function TxnEditor({ open, onClose, onSubmit }: TxnEditorProps) {
     try {
       const txn = convertFormData(formData)
       // console.log('Txn', txn)
-      onSubmit(txn)
+      if (initialData) onSubmit({ ...txn, id: initialData.id })
+      else onSubmit(txn)
     } catch (e) {
       toast.error((e as Error).message)
       console.error(e)
@@ -113,13 +120,11 @@ export function TxnEditor({ open, onClose, onSubmit }: TxnEditorProps) {
     const dialogElm = dialogRef.current
     if (!dialogElm) return
 
+    // NOTE: For this reset to work, none of the inputs should be controlled.
+    // Hence all the hacky refs for reading input state...
+    formRef.current?.reset()
     if (open) dialogElm.showModal()
-    else {
-      dialogElm.close()
-      // NOTE: For this reset to work, none of the inputs should be controlled.
-      // Hence all the hacky refs for reading input state...
-      formRef.current?.reset()
-    }
+    else dialogElm.close()
   }, [open])
 
   useEffect(() => {
@@ -131,10 +136,18 @@ export function TxnEditor({ open, onClose, onSubmit }: TxnEditorProps) {
     return () => dialogElm.removeEventListener('close', onClose)
   })
 
+  // Specifically <select> is glitchy since the options are not loaded yet.
+  useEffect(() => {
+    if (!initialData) return
+    if (!selectedPartyRef.current) return
+    selectedPartyRef.current.value = initialData.counterpartyId ?? 'null'
+    reactToChanges()
+  }, [initialData])
+
   return (
     <dialog ref={dialogRef} className="modal modal-bottom sm:modal-middle z-10">
       <form ref={formRef} className="modal-box" onSubmit={handleFormSubmit}>
-        <h3 className="font-bold text-lg">{` Transaction`}</h3>
+        <h3 className="font-bold text-lg">{`${initialData ? 'Edit' : 'New'} Transaction`}</h3>
         <div className="form-control gap-2 mt-2">
           <div className="flex items-center gap-2 text-lg">
             <input
@@ -142,6 +155,7 @@ export function TxnEditor({ open, onClose, onSubmit }: TxnEditorProps) {
               className="input input-bordered input-sm flex-auto min-w-0"
               title="Name"
               name="name"
+              defaultValue={initialData?.name ?? ''}
               placeholder="Short Descriptive Name..."
               required
             />
@@ -150,6 +164,7 @@ export function TxnEditor({ open, onClose, onSubmit }: TxnEditorProps) {
               className="input input-bordered input-sm flex-auto min-w-0"
               title="Cron Expression"
               name="repeatCron"
+              defaultValue={initialData?.repeatCron ?? ''}
               placeholder="Cron Expression..."
               size={4}
             />
@@ -164,6 +179,7 @@ export function TxnEditor({ open, onClose, onSubmit }: TxnEditorProps) {
               size={8}
               title="Amount"
               name="amount"
+              defaultValue={initialData?.amount ?? ''}
               placeholder="Amount"
               required
             />
@@ -173,7 +189,9 @@ export function TxnEditor({ open, onClose, onSubmit }: TxnEditorProps) {
               className="toggle toggle-md"
               title="Payment Direction"
               name="direction"
-              defaultChecked
+              defaultChecked={
+                initialData ? initialData.direction === 'paid' : true
+              }
               onClick={reactToChanges}
             />
             <TxnDirectionArrow className="inline" direction={direction} />
@@ -182,8 +200,8 @@ export function TxnEditor({ open, onClose, onSubmit }: TxnEditorProps) {
               ref={selectedPartyRef}
               className="select select-bordered select-sm pl-6 flex-1 min-w-0"
               title="Selected Party"
-              defaultValue="null"
               name="counterpartyId"
+              defaultValue={initialData?.counterpartyId ?? 'null'}
               onChange={reactToChanges}
             >
               <option disabled value="null">
@@ -207,6 +225,7 @@ export function TxnEditor({ open, onClose, onSubmit }: TxnEditorProps) {
               className="input input-bordered input-sm flex-auto min-w-0"
               title="Tags"
               name="tags"
+              defaultValue={initialData?.tags.join(', ') ?? ''}
               placeholder="tag1, tag2, tag3, ..."
             />
           </div>
@@ -215,12 +234,13 @@ export function TxnEditor({ open, onClose, onSubmit }: TxnEditorProps) {
             className="textarea textarea-bordered textarea-xs"
             title="User Note"
             name="userNote"
+            defaultValue={initialData?.userNote ?? ''}
             placeholder="Any notes?"
           />
         </div>
         <div className="modal-action">
           <button type="submit" className="btn btn-sm btn-primary">
-            Submit
+            {initialData ? 'Update' : 'Submit'}
           </button>
           <button
             type="button"

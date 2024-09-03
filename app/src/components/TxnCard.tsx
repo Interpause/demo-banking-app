@@ -10,7 +10,7 @@ import {
   FaPenToSquare,
   FaRegTrashCan,
 } from 'react-icons/fa6'
-import { TxnData } from '../api'
+import { TxnData, TxnDataOrNull } from '../api'
 import { TEMP_getPartyPic, TEMP_HARDCODED_ACCOUNTS } from '../api/mock'
 import { useTxnStore } from './TxnStoreContext'
 
@@ -151,7 +151,7 @@ export function TxnCard({ txnId, expanded = true }: TxnCardProps) {
 }
 
 export interface TxnCardItemProps extends TxnCardProps {
-  txn: TxnData | null
+  txn: TxnDataOrNull
   refresh: (id: string) => void
   edit: (id: string) => void
   del: (id: string) => void

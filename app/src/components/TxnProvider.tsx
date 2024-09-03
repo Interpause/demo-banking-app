@@ -1,6 +1,7 @@
 /** Context provider for state of transaction list. */
 
 import { useCallback, useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
 import { txnDeleteById, txnGetIdList, txnGetIds } from '../api'
 import { TxnContext, TxnMap } from './TxnContext'
 
@@ -25,14 +26,19 @@ export function TxnProvider({ children }: TxnProviderProps) {
   // Function passed to consumers to refresh specific txn by id.
   const refreshTxn = useCallback(async (id: string) => {
     setTxnMap((prev) => ({ ...prev, [id]: null }))
-    const txn = (await txnGetIds([id]))[0]
-    if (!txn)
-      // Treat txn as deleted if not found.
-      setTxnMap((prev) => {
-        const { [id]: _unused, ...rest } = prev
-        return rest
-      })
-    else setTxnMap((prev) => ({ ...prev, [id]: txn }))
+    try {
+      const txn = (await txnGetIds([id]))[0]
+      if (!txn)
+        // Treat txn as deleted if not found.
+        setTxnMap((prev) => {
+          const { [id]: _unused, ...rest } = prev
+          return rest
+        })
+      else setTxnMap((prev) => ({ ...prev, [id]: txn }))
+    } catch (e) {
+      toast.error('Failed to fetch transaction!')
+      console.error('Failed to fetch txn.', e)
+    }
   }, [])
 
   // TODO Allow consumers to trigger edit mode.
@@ -40,13 +46,20 @@ export function TxnProvider({ children }: TxnProviderProps) {
     throw new Error(id)
   }, [])
 
-  // TODO Allow consumers to delete txn.
   const deleteTxn = useCallback(async (id: string) => {
     setTxnMap((prev) => {
       const { [id]: _unused, ...rest } = prev
       return rest
     })
-    await txnDeleteById(id)
+    try {
+      await toast.promise(txnDeleteById(id), {
+        loading: 'Deleting...',
+        success: 'Deleted!',
+        error: 'Failed to delete.',
+      })
+    } catch (e) {
+      console.error('Failed to delete txn.', e)
+    }
   }, [])
 
   // Refresh transaction list.
@@ -54,7 +67,6 @@ export function TxnProvider({ children }: TxnProviderProps) {
     if (!hasRefreshRequest) return () => {}
     let cancelled = false
     ;(async () => {
-      // TODO: handle error here.
       try {
         const allIds = await txnGetIdList()
         if (cancelled) return
@@ -65,8 +77,11 @@ export function TxnProvider({ children }: TxnProviderProps) {
             ...prev,
             ...Object.fromEntries(nids.map((id) => [id, null])),
           }))
-        console.log('Set newIds', nids)
+        // console.log('Set newIds', nids)
         setNewIds(nids)
+      } catch (e) {
+        toast.error('Failed to fetch transaction list!')
+        console.error('Failed to fetch txn list.', e)
       } finally {
         if (!cancelled) setHasRefreshRequest(false)
       }
@@ -86,9 +101,9 @@ export function TxnProvider({ children }: TxnProviderProps) {
           txnArr.filter((txn) => txn !== null).map((txn) => [txn.id, txn]),
         )
         setTxnMap((prev) => ({ ...prev, ...added }))
-      } catch (err) {
-        // TODO: Throw here too.
-        console.error('Failed to fetch txns.', err)
+      } catch (e) {
+        toast.error('Failed to fetch transactions!')
+        console.error('Failed to fetch txns.', e)
       }
     })()
   }, [newIds])

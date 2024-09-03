@@ -39,5 +39,4 @@ export interface ApiInterface {
 /*
 TODO:
 - Incorporate bulk update or leave as exercise to reader since its not always needed?
-- Remember to error wrap all api funcs where used.
 */

@@ -19,7 +19,7 @@ function LoadingIndicatorItem() {
 }
 
 type ItemDataGetter = (index: number) => {
-  id: string | undefined
+  txnId: string | undefined
   txn: TxnData | null
   refresh: (id: string) => void
   edit: (id: string) => void
@@ -30,13 +30,13 @@ interface ItemProps extends ListChildComponentProps<ItemDataGetter> {}
 
 /** List item. */
 function Item({ data: getItemData, index, style }: ItemProps) {
-  const { id, ...props } = getItemData(index)
+  const { txnId, ...props } = getItemData(index)
 
   return (
     <div style={style}>
       {
-        id ?
-          <TxnCardItem id={id} {...props} />
+        txnId ?
+          <TxnCardItem txnId={txnId} {...props} />
           // Index oob implies more ids being loaded; Display loading indicator.
         : <LoadingIndicatorItem />
       }
@@ -63,10 +63,10 @@ export function TxnListDisplay() {
   // Use by Item to get data for item at index.
   const getItemData = useCallback<ItemDataGetter>(
     (index: number) => {
-      const id = txnIds[index]
+      const txnId = txnIds[index]
       return {
-        id,
-        txn: id ? (txnMap[id] ?? null) : null,
+        txnId,
+        txn: txnId ? (txnMap[txnId] ?? null) : null,
         refresh: refreshTxn,
         edit: editTxn,
         del: deleteTxn,
@@ -82,7 +82,7 @@ export function TxnListDisplay() {
   }, [newIds]) // Abuse change in newIds' identity as indication of no new ids despite refresh.
   useEffect(() => {
     if (allowRefresh) return
-    console.log('Timeout refresh')
+    // console.log('Timeout refresh')
     const timeout = setTimeout(() => setAllowRefresh(true), REFRESH_TIMEOUT)
     return () => clearTimeout(timeout)
   }, [allowRefresh])

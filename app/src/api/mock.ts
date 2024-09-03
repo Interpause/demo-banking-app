@@ -15,7 +15,7 @@ const allIds: TxnMap = {}
 const idCallCounter: Record<string, number> = {}
 
 const randomTxn = (id: string): TxnData => ({
-  id: id,
+  id,
   counterpartyId: v4(),
   createdAt: DateTime.now(),
   amount: Math.random() * 1000,
@@ -53,8 +53,7 @@ async function txnGetIdList() {
 async function txnGetId(id: string) {
   const N = idCallCounter[id] ?? 1
   idCallCounter[id] = N + 1
-  if (N > 1) console.warn(`fetchTxn (${N})`, id)
-  else console.log(`fetchTxn`, id)
+  console.assert(N < 2, `fetchTxn (${N})`, id)
   // await sleep(MOCK_DELAY)
   return allIds[id] ?? null
 }

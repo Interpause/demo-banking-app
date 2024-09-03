@@ -16,7 +16,9 @@ import { useTxnStore } from './TxnStoreContext'
 
 export const CARD_HEIGHT_REM = 4
 
-interface TxnDetailsProps extends TxnData {}
+interface TxnDetailsProps extends Omit<TxnData, 'id'> {
+  txnId: string
+}
 
 interface TxnDirectionArrowProps extends ComponentProps<'svg'> {
   direction: TxnData['direction']
@@ -105,18 +107,18 @@ function TxnDetailsMore({
 }
 
 export interface TxnCardProps {
-  id: string
+  txnId: string
   expanded?: boolean
 }
 
 /** Transaction card that is standalone given context. */
-export function TxnCard({ id, expanded }: TxnCardProps) {
+export function TxnCard({ txnId, expanded = true }: TxnCardProps) {
   const { refreshTxn, editTxn, deleteTxn, txnMap } = useTxnStore()
   return (
     <TxnCardItem
-      id={id}
-      txn={txnMap[id] ?? null}
-      expanded={expanded ?? true}
+      txnId={txnId}
+      txn={txnMap[txnId] ?? null}
+      expanded={expanded}
       refresh={refreshTxn}
       edit={editTxn}
       del={deleteTxn}
@@ -133,7 +135,7 @@ export interface TxnCardItemProps extends TxnCardProps {
 
 /** Transaction card meant to be used inside TxnList meant to be used inside TxnList. */
 export function TxnCardItem({
-  id,
+  txnId,
   txn,
   expanded,
   refresh,
@@ -178,10 +180,10 @@ export function TxnCardItem({
         <div className="card-body gap-0">
           <div className="card-actions justify-start flex-nowrap items-center">
             <div className="flex-1 min-w-0">
-              {shouldShowMini && <TxnDetailsMini {...txn} />}
+              {shouldShowMini && <TxnDetailsMini {...txn} txnId={txnId} />}
               {shouldShowMore && (
                 <span className="font-mono truncate text-base-300 hover:text-base-content">
-                  {id}
+                  {txnId}
                 </span>
               )}
               {/*Display indicator that txn data is being loaded.*/}
@@ -192,7 +194,7 @@ export function TxnCardItem({
                 className="btn btn-square btn-sm join-item"
                 title="Refresh"
                 disabled={!txn}
-                onClick={() => refresh(id)}
+                onClick={() => refresh(txnId)}
               >
                 <FaArrowRotateRight />
               </button>
@@ -200,7 +202,7 @@ export function TxnCardItem({
                 className="btn btn-square btn-sm join-item"
                 title="Edit"
                 disabled={!txn}
-                onClick={() => edit(id)}
+                onClick={() => edit(txnId)}
               >
                 <FaPenToSquare />
               </button>
@@ -208,7 +210,7 @@ export function TxnCardItem({
                 className="btn btn-square btn-sm join-item"
                 title="Delete"
                 disabled={!txn}
-                onClick={() => del(id)}
+                onClick={() => del(txnId)}
               >
                 <FaRegTrashCan />
               </button>
@@ -228,7 +230,7 @@ export function TxnCardItem({
               <FaExpand />
             </button>
           </div>
-          {shouldShowMore && <TxnDetailsMore {...txn} />}
+          {shouldShowMore && <TxnDetailsMore {...txn} txnId={txnId} />}
         </div>
       </div>
     </div>

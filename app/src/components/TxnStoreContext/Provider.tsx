@@ -46,24 +46,32 @@ export function TxnStoreProvider({ children }: TxnStoreProviderProps) {
     throw new Error(id)
   }, [])
 
-  const deleteTxn = useCallback(async (id: string) => {
-    // Put the transaction into fake "loading" state.
-    setTxnMap((prev) => ({ ...prev, [id]: null }))
-    try {
-      await toast.promise(txnDeleteById(id), {
-        loading: 'Deleting...',
-        success: 'Deleted!',
-        error: 'Failed to delete.',
-      })
-      // Delete from local state.
-      setTxnMap((prev) => {
-        const { [id]: _unused, ...rest } = prev
-        return rest
-      })
-    } catch (e) {
-      console.error('Failed to delete txn.', e)
-    }
-  }, [])
+  const deleteTxn = useCallback(
+    async (id: string) => {
+      const txn = txnMap[id]
+      if (!txn) {
+        console.error('Txn not found to delete.', id)
+        return
+      }
+      // Put the transaction into fake "loading" state.
+      setTxnMap((prev) => ({ ...prev, [id]: null }))
+      try {
+        await toast.promise(txnDeleteById(id), {
+          loading: 'Deleting...',
+          success: `Deleted "${txn.name}"!`,
+          error: `Failed to delete "${txn.name}".`,
+        })
+        // Delete from local state.
+        setTxnMap((prev) => {
+          const { [id]: _unused, ...rest } = prev
+          return rest
+        })
+      } catch (e) {
+        console.error('Failed to delete txn.', e)
+      }
+    },
+    [txnMap],
+  )
 
   // Refresh transaction list.
   useEffect(() => {

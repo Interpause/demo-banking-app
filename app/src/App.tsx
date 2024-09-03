@@ -20,8 +20,8 @@ function MainPage() {
       toast
         .promise(txnCreate(txn), {
           loading: 'Submitting...',
-          success: 'Created!',
-          error: 'Failed to create.',
+          success: `Created "${txn.name}"!`,
+          error: `Failed to create "${txn.name}".`,
         })
         .catch((e) => {
           console.error('Failed to create txn.', e)

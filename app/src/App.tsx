@@ -1,5 +1,5 @@
 import { Toaster } from 'react-hot-toast'
-import { TxnListDisplay, TxnProvider } from './components'
+import { TxnListDisplay, TxnStoreProvider } from './components'
 
 function App() {
   const toggleDarkMode = () => {
@@ -18,9 +18,9 @@ function App() {
           Demo Banking App
         </h1>
         <div className="w-full h-[64rem] px-4">
-          <TxnProvider>
+          <TxnStoreProvider>
             <TxnListDisplay />
-          </TxnProvider>
+          </TxnStoreProvider>
         </div>
         <div className="prose bg-base-200">
           <p>

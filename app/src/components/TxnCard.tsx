@@ -12,7 +12,7 @@ import {
 } from 'react-icons/fa6'
 import { TxnData } from '../api'
 import { rem2px } from '../utils'
-import { useTxn } from './TxnContext'
+import { useTxnStore } from './TxnStoreContext'
 
 export const CARD_HEIGHT_REM = 4
 
@@ -111,7 +111,7 @@ export interface TxnCardProps {
 
 /** Transaction card that is standalone given context. */
 export function TxnCard({ id, expanded }: TxnCardProps) {
-  const { refreshTxn, editTxn, deleteTxn, txnMap } = useTxn()
+  const { refreshTxn, editTxn, deleteTxn, txnMap } = useTxnStore()
   return (
     <TxnCardItem
       id={id}

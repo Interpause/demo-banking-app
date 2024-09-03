@@ -7,7 +7,7 @@ import InfiniteLoader from 'react-window-infinite-loader'
 import { TxnData } from '../api'
 import { rem2px } from '../utils'
 import { CARD_HEIGHT_REM, TxnCardItem } from './TxnCard'
-import { useTxn } from './TxnContext'
+import { useTxnStore } from './TxnStoreContext'
 
 const REFRESH_TIMEOUT = 2000
 
@@ -47,7 +47,7 @@ function Item({ data: getItemData, index, style }: ItemProps) {
 /** Infinite scrolling list of transactions. */
 export function TxnListDisplay() {
   const { refreshList, refreshTxn, editTxn, deleteTxn, txnMap, newIds } =
-    useTxn()
+    useTxnStore()
   const txnIds = Object.keys(txnMap)
   // Timeout refresh if no new ids are found.
   const [allowRefresh, setAllowRefresh] = useState(true)

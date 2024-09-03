@@ -7,7 +7,7 @@ import { TxnData } from '../../api'
 export type TxnMap = Record<string, TxnData | null>
 
 /** Type for TxnContext. */
-export type TxnContextType = {
+export type TxnStoreType = {
   /** Function passed to consumers to refresh txn list. */
   refreshList: () => void
   /** Function passed to consumers to refresh specific txn by id. */
@@ -22,11 +22,11 @@ export type TxnContextType = {
   newIds: string[]
 }
 
-export const TxnContext = createContext<TxnContextType | null>(null)
+export const TxnStoreContext = createContext<TxnStoreType | null>(null)
 
 /** Hook to access transaction list and related functions. */
-export function useTxn() {
-  const context = useContext(TxnContext)
+export function useTxnStore() {
+  const context = useContext(TxnStoreContext)
   if (!context) throw new Error('useTxn must be used within a TxnProvider.')
   return context
 }

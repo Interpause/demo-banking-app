@@ -3,14 +3,14 @@
 import { useCallback, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { txnDeleteById, txnGetIdList, txnGetIds } from '../../api'
-import { TxnContext, TxnMap } from './context'
+import { TxnMap, TxnStoreContext } from './context'
 
-export interface TxnProviderProps {
+export interface TxnStoreProviderProps {
   children: React.ReactNode
 }
 
 /** Context provider for transaction list and other related functions. */
-export function TxnProvider({ children }: TxnProviderProps) {
+export function TxnStoreProvider({ children }: TxnStoreProviderProps) {
   // List of all txns as map of id to txn data, where data is null till loaded.
   const [txnMap, setTxnMap] = useState<TxnMap>({})
   // List of newly added txn ids to fetch txn data for.
@@ -112,10 +112,10 @@ export function TxnProvider({ children }: TxnProviderProps) {
   }, [newIds])
 
   return (
-    <TxnContext.Provider
+    <TxnStoreContext.Provider
       value={{ refreshList, refreshTxn, deleteTxn, editTxn, txnMap, newIds }}
     >
       {children}
-    </TxnContext.Provider>
+    </TxnStoreContext.Provider>
   )
 }

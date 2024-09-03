@@ -12,6 +12,10 @@ export type TxnContextType = {
   refreshList: () => void
   /** Function passed to consumers to refresh specific txn by id. */
   refreshTxn: (id: string) => void
+  /** Function passed to consumers to delete txn by id. */
+  deleteTxn: (id: string) => void
+  /** Function passed to consumers to trigger edit mode for txn by id. */
+  editTxn: (id: string) => void
   /** List of txns as map of id to txn data, where data is null till loaded. */
   txnMap: TxnMap
   /** List of newly added txn ids. */

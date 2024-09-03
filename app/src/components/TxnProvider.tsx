@@ -1,7 +1,7 @@
 /** Context provider for state of transaction list. */
 
 import { useCallback, useEffect, useState } from 'react'
-import { txnGetIdList, txnGetIds } from '../api'
+import { txnDeleteById, txnGetIdList, txnGetIds } from '../api'
 import { TxnContext, TxnMap } from './TxnContext'
 
 export interface TxnProviderProps {
@@ -33,6 +33,20 @@ export function TxnProvider({ children }: TxnProviderProps) {
         return rest
       })
     else setTxnMap((prev) => ({ ...prev, [id]: txn }))
+  }, [])
+
+  // TODO Allow consumers to trigger edit mode.
+  const editTxn = useCallback(async (id: string) => {
+    throw new Error(id)
+  }, [])
+
+  // TODO Allow consumers to delete txn.
+  const deleteTxn = useCallback(async (id: string) => {
+    setTxnMap((prev) => {
+      const { [id]: _unused, ...rest } = prev
+      return rest
+    })
+    await txnDeleteById(id)
   }, [])
 
   // Refresh transaction list.
@@ -80,7 +94,9 @@ export function TxnProvider({ children }: TxnProviderProps) {
   }, [newIds])
 
   return (
-    <TxnContext.Provider value={{ refreshList, refreshTxn, txnMap, newIds }}>
+    <TxnContext.Provider
+      value={{ refreshList, refreshTxn, deleteTxn, editTxn, txnMap, newIds }}
+    >
       {children}
     </TxnContext.Provider>
   )

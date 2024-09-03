@@ -7,6 +7,8 @@ import {
   FaCircleArrowRight,
   FaCircleQuestion,
   FaExpand,
+  FaPenToSquare,
+  FaRegTrashCan,
 } from 'react-icons/fa6'
 import { TxnData } from '../api'
 
@@ -103,13 +105,17 @@ export interface TxnCardProps {
   id: string
   txn: TxnData | null
   refresh: (id: string) => void
+  edit: (id: string) => void
+  del: (id: string) => void
 }
 
 /** Transaction card. */
-export function TxnCard({ id, txn, refresh }: TxnCardProps) {
+export function TxnCard({ id, txn, refresh, edit, del }: TxnCardProps) {
   const [isExpanded, setIsExpanded] = useState(false)
 
   const refreshId = txn ? () => refresh(id) : undefined
+  const editId = txn ? () => edit(id) : undefined
+  const delId = txn ? () => del(id) : undefined
   const shouldExpand = txn && isExpanded
   const shouldShowMore = txn && shouldExpand
   const shouldShowMini = txn && !shouldExpand
@@ -146,6 +152,20 @@ export function TxnCard({ id, txn, refresh }: TxnCardProps) {
                 onClick={refreshId}
               >
                 <FaArrowRotateRight />
+              </button>
+              <button
+                className="btn btn-square btn-sm join-item"
+                title="Edit"
+                onClick={editId}
+              >
+                <FaPenToSquare />
+              </button>
+              <button
+                className="btn btn-square btn-sm join-item"
+                title="Delete"
+                onClick={delId}
+              >
+                <FaRegTrashCan />
               </button>
               <button
                 className="btn btn-square btn-sm join-item data-[expanded=true]:btn-primary"

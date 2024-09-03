@@ -22,19 +22,21 @@ type ItemDataGetter = (index: number) => {
   id: string | undefined
   txn: TxnData | null
   refresh: (id: string) => void
+  edit: (id: string) => void
+  del: (id: string) => void
 }
 
 interface ItemProps extends ListChildComponentProps<ItemDataGetter> {}
 
 /** List item. */
 function Item({ data: getItemData, index, style }: ItemProps) {
-  const { id, txn, refresh } = getItemData(index)
+  const { id, ...props } = getItemData(index)
 
   return (
     <div style={style}>
       {
         id ?
-          <TxnCard id={id} txn={txn} refresh={refresh} />
+          <TxnCard id={id} {...props} />
           // Index oob implies more ids being loaded; Display loading indicator.
         : <LoadingIndicatorItem />
       }
@@ -44,7 +46,8 @@ function Item({ data: getItemData, index, style }: ItemProps) {
 
 /** Infinite scrolling list of transactions. */
 export function TxnListDisplay() {
-  const { refreshList, refreshTxn, txnMap, newIds } = useTxn()
+  const { refreshList, refreshTxn, editTxn, deleteTxn, txnMap, newIds } =
+    useTxn()
   const txnIds = Object.keys(txnMap)
   // Timeout refresh if no new ids are found.
   const [allowRefresh, setAllowRefresh] = useState(true)
@@ -65,9 +68,11 @@ export function TxnListDisplay() {
         id,
         txn: id ? (txnMap[id] ?? null) : null,
         refresh: refreshTxn,
+        edit: editTxn,
+        del: deleteTxn,
       }
     },
-    [refreshTxn, txnIds, txnMap],
+    [deleteTxn, editTxn, refreshTxn, txnIds, txnMap],
   )
 
   // Timeout refresh if no new ids are found.

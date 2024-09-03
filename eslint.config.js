@@ -59,6 +59,19 @@ export default tseslint.config(
     },
   },
 
+  // Eslint config for the server workspace.
+  {
+    files: ['server/**/*.js'],
+    languageOptions: {
+      ecmaVersion: 2022,
+      globals: globals.node,
+      parserOptions: {
+        ecmaVersion: '2022',
+        sourceType: 'module',
+      },
+    },
+  },
+
   // Disable eslint rules that conflict with prettier.
   prettierConfig,
 )

@@ -1,24 +1,36 @@
 /** Fill in API functions below. */
-
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/** Fetch all ids from server. */
+
+/** Create new transaction record. */
+async function txnCreate(txn) {
+  throw new Error('Not implemented')
+}
+
+/** Fetch list of transaction ids. */
 async function txnGetIdList() {
   throw new Error('Not implemented')
 }
 
-/** Get data associated with id. */
-async function txnGetId(id) {
+/** Fetch associated transaction data for each id in list. */
+async function txnGetIds(ids) {
   throw new Error('Not implemented')
 }
 
-/** Get associated data for each id in list. */
-async function txnGetIds(ids) {
+/** Update transaction data associated with id. */
+async function txnUpdateById(id, txn) {
+  throw new Error('Not implemented')
+}
+
+/** Delete transaction data associated with id. */
+async function txnDeleteById(id) {
   throw new Error('Not implemented')
 }
 
 /** @type {import('./types').ApiInterface} */
 export default {
+  txnCreate,
   txnGetIdList,
-  txnGetId,
   txnGetIds,
+  txnUpdateById,
+  txnDeleteById,
 }

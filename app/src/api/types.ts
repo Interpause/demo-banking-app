@@ -19,12 +19,24 @@ export interface TxnData {
   // to change base currency unless you have a db of all exchange rates at the time.
 }
 
+export type TxnDataOrNull = TxnData | null
+export type TxnDataNoId = Omit<TxnData, 'id'>
+
 /** Interface all API providers should implement. */
 export interface ApiInterface {
-  /** Fetch all ids from server. */
+  /** Create new transaction record. */
+  txnCreate(txn: TxnDataNoId): Promise<UUID>
+  /** Fetch list of transaction ids. */
   txnGetIdList(): Promise<UUID[]>
-  /** Get data associated with id. */
-  txnGetId(id: UUID): Promise<TxnData>
-  /** Get associated data for each id in list. */
-  txnGetIds(ids: UUID[]): Promise<TxnData[]>
+  /** Fetch associated transaction data for each id in list. */
+  txnGetIds(ids: UUID[]): Promise<TxnDataOrNull[]>
+  /** Update transaction data associated with id. */
+  txnUpdateById(id: UUID, txn: TxnDataNoId): Promise<void>
+  /** Delete transaction data associated with id. */
+  txnDeleteById(id: UUID): Promise<void>
 }
+
+/*
+TODO:
+- Incorporate bulk update or leave as exercise to reader since its not always needed?
+*/

@@ -68,10 +68,10 @@ export function TxnProvider({ children }: TxnProviderProps) {
       // Proper way to fetch.
       try {
         const txnArr = await txnGetIds(newIds)
-        setTxnMap((prev) => ({
-          ...prev,
-          ...Object.fromEntries(txnArr.map((txn) => [txn.id, txn])),
-        }))
+        const added = Object.fromEntries(
+          txnArr.filter((txn) => txn !== null).map((txn) => [txn.id, txn]),
+        )
+        setTxnMap((prev) => ({ ...prev, ...added }))
       } catch (err) {
         // TODO: Throw here too.
         console.error('Failed to fetch txns.', err)

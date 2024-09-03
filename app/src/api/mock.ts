@@ -3,14 +3,15 @@
 import { DateTime } from 'luxon'
 import { v4 } from 'uuid'
 import { TxnData } from '../api'
+import { TxnMap } from '../components'
 import { sleep } from '../utils'
-import { ApiInterface } from './types'
+import { ApiInterface, TxnDataNoId } from './types'
 
 const MOCK_DELAY = 1000
-const MOCK_IDS_PER_REFRESH = 50
-const MOCK_ID_LIMIT = 1000
+const MOCK_IDS_PER_REFRESH = 2
+const MOCK_ID_LIMIT = 10
 
-const allIds: string[] = []
+const allIds: TxnMap = {}
 const idCallCounter: Record<string, number> = {}
 
 const randomTxn = (id: string): TxnData => ({
@@ -24,36 +25,64 @@ const randomTxn = (id: string): TxnData => ({
   userNote: Math.random() > 0.5 ? 'This is a note' : '',
 })
 
-/** Fetch all ids from server. */
+/** Create new transaction record. */
+async function txnCreate(txn: TxnDataNoId) {
+  console.log('createTxn', txn)
+  await sleep(MOCK_DELAY)
+  let id = v4()
+  while (allIds[id]) id = v4()
+  allIds[id] = { ...txn, id }
+  return id
+}
+
+/** Fetch list of transaction ids. */
 async function txnGetIdList() {
-  console.log('fetchAllIds')
+  console.log('fetchTxnList')
   await sleep(MOCK_DELAY)
   // Create new ids each time fetch is called.
-  const curlen = allIds.length
-  if (curlen >= MOCK_ID_LIMIT) return allIds
-  allIds.push(...Array.from({ length: MOCK_IDS_PER_REFRESH }, () => v4()))
-  return allIds
+  const curlen = Object.keys(allIds).length
+  if (curlen >= MOCK_ID_LIMIT) return Object.keys(allIds)
+  Array.from({ length: MOCK_IDS_PER_REFRESH }, () => v4()).forEach(
+    (id) => (allIds[id] = randomTxn(id)),
+  )
+  return Object.keys(allIds)
 }
 
-/** Get data associated with id. */
-async function txnGetId(id: string): Promise<TxnData> {
+/** Fetch transaction data associated with id. */
+async function txnGetId(id: string) {
   const N = idCallCounter[id] ?? 1
   idCallCounter[id] = N + 1
-  if (N > 1) console.warn(`fetchDataById (${N})`, id)
-  else console.log(`fetchDataById`, id)
+  if (N > 1) console.warn(`fetchTxn (${N})`, id)
+  else console.log(`fetchTxn`, id)
   // await sleep(MOCK_DELAY)
-  return randomTxn(id)
+  return allIds[id] ?? null
 }
 
-/** Get associated data for each id in list. */
-async function txnGetIds(ids: string[]): Promise<TxnData[]> {
-  console.log('fetchDataByIds', ids)
+/** Fetch associated transaction data for each id in list. */
+async function txnGetIds(ids: string[]) {
+  console.log('fetchTxns', ids)
   await sleep(MOCK_DELAY)
   return await Promise.all(ids.map(txnGetId))
 }
 
+/** Update transaction data associated with id. */
+async function txnUpdateById(id: string, txn: TxnDataNoId) {
+  console.log('updateTxn', id, txn)
+  await sleep(MOCK_DELAY)
+  allIds[id] = { ...txn, id }
+}
+
+/** Delete transaction data associated with id. */
+async function txnDeleteById(id: string) {
+  console.log('deleteTxn', id)
+  await sleep(MOCK_DELAY)
+  delete allIds[id]
+}
+
 export default {
+  txnCreate,
   txnGetIdList,
-  txnGetId,
   txnGetIds,
+  txnUpdateById,
+  txnDeleteById,
 } satisfies ApiInterface

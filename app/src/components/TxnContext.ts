@@ -3,8 +3,6 @@
 import { createContext, useContext } from 'react'
 import { TxnData } from '../api'
 
-// TODO: Can transactions be deleted? Need to handle.
-
 /** List of txns as map of id to txn data, where data is null till loaded. */
 export type TxnMap = Record<string, TxnData | null>
 

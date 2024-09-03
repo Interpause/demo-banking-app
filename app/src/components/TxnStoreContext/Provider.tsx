@@ -1,9 +1,9 @@
 /** Context provider for state of transaction list. */
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
 import { txnDeleteById, txnGetIdList, txnGetIds } from '../../api'
-import { TxnMap, TxnStoreContext } from './context'
+import { EditorLauncher, TxnMap, TxnStoreContext } from './context'
 
 export const REFRESH_TIMEOUT = 3000
 export interface TxnStoreProviderProps {
@@ -18,6 +18,8 @@ export function TxnStoreProvider({ children }: TxnStoreProviderProps) {
   const [newIds, setNewIds] = useState<string[]>([])
   // Request for refresh. Starts as true to fetch initial list.
   const [hasRefreshRequest, setHasRefreshRequest] = useState(true)
+  // Function to open editor with initial txn data.
+  const editorLauncherRef = useRef<EditorLauncher>(() => {})
   // Txn ids already known of.
   const txnIds = Object.keys(txnMap)
 
@@ -42,10 +44,16 @@ export function TxnStoreProvider({ children }: TxnStoreProviderProps) {
     }
   }, [])
 
-  // TODO Allow consumers to trigger edit mode.
-  const editTxn = useCallback(async (id: string) => {
-    throw new Error(id)
-  }, [])
+  const editTxn = useCallback(
+    (id: string) => {
+      const launchEditor = editorLauncherRef.current
+      if (!launchEditor) return
+      const txn = txnMap[id]
+      if (!txn) return
+      launchEditor(txn)
+    },
+    [txnMap],
+  )
 
   const deleteTxn = useCallback(
     async (id: string) => {
@@ -130,7 +138,15 @@ export function TxnStoreProvider({ children }: TxnStoreProviderProps) {
 
   return (
     <TxnStoreContext.Provider
-      value={{ refreshList, refreshTxn, deleteTxn, editTxn, txnMap, newIds }}
+      value={{
+        refreshList,
+        refreshTxn,
+        deleteTxn,
+        editTxn,
+        editorLauncherRef,
+        txnMap,
+        newIds,
+      }}
     >
       {children}
     </TxnStoreContext.Provider>

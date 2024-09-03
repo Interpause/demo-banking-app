@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList, ListChildComponentProps } from 'react-window'
 import InfiniteLoader from 'react-window-infinite-loader'
-import { TxnData } from '../api'
+import { TxnDataOrNull } from '../api'
 import { rem2px } from '../utils'
 import { CARD_HEIGHT_REM, TxnCardItem } from './TxnCard'
 import { REFRESH_TIMEOUT, useTxnStore } from './TxnStoreContext'
@@ -18,7 +18,7 @@ function LoadingIndicatorItem() {
 
 type ItemDataGetter = (index: number) => {
   txnId: string | undefined
-  txn: TxnData | null
+  txn: TxnDataOrNull
   refresh: (id: string) => void
   edit: (id: string) => void
   del: (id: string) => void

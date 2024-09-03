@@ -1,7 +1,7 @@
 import api, { USE_MOCK_API } from './api'
 import mock from './mock'
 
-export type { TxnData, UUID } from './types'
+export type { TxnData, TxnDataNoId, TxnDataOrNull, UUID } from './types'
 
 const a = USE_MOCK_API ? mock : api
 export const txnCreate = a.txnCreate

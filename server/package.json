@@ -1,5 +1,18 @@
 {
   "name": "demo-banking-server",
   "private": true,
-  "version": "0.0.0"
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "dotenvx run --convention=nextjs -- node --watch --watch-preserve-output app.js"
+  },
+  "dependencies": {
+    "@dotenvx/dotenvx": "^1.13.2",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "debug": "^4.3.6",
+    "express": "^4.19.2",
+    "mongoose": "^8.6.0",
+    "morgan": "^1.10.0"
+  }
 }

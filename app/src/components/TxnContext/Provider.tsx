@@ -47,15 +47,18 @@ export function TxnProvider({ children }: TxnProviderProps) {
   }, [])
 
   const deleteTxn = useCallback(async (id: string) => {
-    setTxnMap((prev) => {
-      const { [id]: _unused, ...rest } = prev
-      return rest
-    })
+    // Put the transaction into fake "loading" state.
+    setTxnMap((prev) => ({ ...prev, [id]: null }))
     try {
       await toast.promise(txnDeleteById(id), {
         loading: 'Deleting...',
         success: 'Deleted!',
         error: 'Failed to delete.',
+      })
+      // Delete from local state.
+      setTxnMap((prev) => {
+        const { [id]: _unused, ...rest } = prev
+        return rest
       })
     } catch (e) {
       console.error('Failed to delete txn.', e)

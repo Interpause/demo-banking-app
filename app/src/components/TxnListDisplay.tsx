@@ -6,7 +6,7 @@ import { FixedSizeList, ListChildComponentProps } from 'react-window'
 import InfiniteLoader from 'react-window-infinite-loader'
 import { TxnData } from '../api'
 import { rem2px } from '../utils'
-import { CARD_HEIGHT_REM, TxnCard } from './TxnCard'
+import { CARD_HEIGHT_REM, TxnCardItem } from './TxnCard'
 import { useTxn } from './TxnContext'
 
 const REFRESH_TIMEOUT = 2000
@@ -36,7 +36,7 @@ function Item({ data: getItemData, index, style }: ItemProps) {
     <div style={style}>
       {
         id ?
-          <TxnCard id={id} {...props} />
+          <TxnCardItem id={id} {...props} />
           // Index oob implies more ids being loaded; Display loading indicator.
         : <LoadingIndicatorItem />
       }

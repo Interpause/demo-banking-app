@@ -12,6 +12,7 @@ import {
 } from 'react-icons/fa6'
 import { TxnData } from '../api'
 import { rem2px } from '../utils'
+import { useTxn } from './TxnContext'
 
 export const CARD_HEIGHT_REM = 4
 
@@ -105,23 +106,50 @@ function TxnDetailsMore({
 
 export interface TxnCardProps {
   id: string
+  expanded?: boolean
+}
+
+/** Transaction card that is standalone given context. */
+export function TxnCard({ id, expanded }: TxnCardProps) {
+  const { refreshTxn, editTxn, deleteTxn, txnMap } = useTxn()
+  return (
+    <TxnCardItem
+      id={id}
+      txn={txnMap[id] ?? null}
+      expanded={expanded ?? true}
+      refresh={refreshTxn}
+      edit={editTxn}
+      del={deleteTxn}
+    />
+  )
+}
+
+export interface TxnCardItemProps extends TxnCardProps {
   txn: TxnData | null
   refresh: (id: string) => void
   edit: (id: string) => void
   del: (id: string) => void
 }
 
-/** Transaction card. */
-export function TxnCard({ id, txn, refresh, edit, del }: TxnCardProps) {
+/** Transaction card meant to be used inside TxnList meant to be used inside TxnList. */
+export function TxnCardItem({
+  id,
+  txn,
+  expanded,
+  refresh,
+  edit,
+  del,
+}: TxnCardItemProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const divRef = useRef<HTMLDivElement>(null)
 
-  const refreshId = txn ? () => refresh(id) : undefined
-  const editId = txn ? () => edit(id) : undefined
-  const delId = txn ? () => del(id) : undefined
   const shouldExpand = txn && isExpanded
   const shouldShowMore = txn && shouldExpand
   const shouldShowMini = txn && !shouldExpand
+
+  useEffect(() => {
+    if (expanded !== undefined) setIsExpanded(expanded)
+  }, [expanded])
 
   useEffect(() => {
     const divElm = divRef.current
@@ -163,21 +191,24 @@ export function TxnCard({ id, txn, refresh, edit, del }: TxnCardProps) {
               <button
                 className="btn btn-square btn-sm join-item"
                 title="Refresh"
-                onClick={refreshId}
+                disabled={!txn}
+                onClick={() => refresh(id)}
               >
                 <FaArrowRotateRight />
               </button>
               <button
                 className="btn btn-square btn-sm join-item"
                 title="Edit"
-                onClick={editId}
+                disabled={!txn}
+                onClick={() => edit(id)}
               >
                 <FaPenToSquare />
               </button>
               <button
                 className="btn btn-square btn-sm join-item"
                 title="Delete"
-                onClick={delId}
+                disabled={!txn}
+                onClick={() => del(id)}
               >
                 <FaRegTrashCan />
               </button>

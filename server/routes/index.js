@@ -2,8 +2,8 @@ import { Router } from 'express'
 
 const router = Router()
 
-/* GET home page. */
-router.get('/', function (req, res, next) {
+/** GET home page. */
+router.get('/', function (_req, res, _next) {
   res.send('Hello World')
 })
 

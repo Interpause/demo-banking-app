@@ -11,6 +11,7 @@ import {
   FaRegTrashCan,
 } from 'react-icons/fa6'
 import { TxnData } from '../api'
+import { TEMP_getPartyPic, TEMP_HARDCODED_ACCOUNTS } from '../api/mock'
 import { useTxnStore } from './TxnStoreContext'
 
 export const CARD_HEIGHT_REM = 6
@@ -70,12 +71,14 @@ function TxnDetailsMini({
   tags,
   counterpartyId,
 }: TxnDetailsProps) {
+  const PartyIcon = TEMP_getPartyPic(counterpartyId)
+
   return (
     <div className="flex w-full gap-1 items-center">
       <span className="font-black">{`$${amount.toFixed(2)}`}</span>
       <TxnDirectionArrow direction={direction} className="inline flex-none" />
-      <span className="flex-none truncate w-[4.5rem] font-mono">
-        {counterpartyId}
+      <span className="flex-none">
+        <PartyIcon />
       </span>
       <div className="flex-grow" />
       <TxnTagsBar tags={tags} />
@@ -103,7 +106,7 @@ function TxnDetailsMore({
     default:
       directionMsg = 'involved with'
   }
-  const amountMsg = `$${amount.toFixed(2)} ${directionMsg} ${counterpartyId}`
+  const amountMsg = `$${amount.toFixed(2)} ${directionMsg} ${TEMP_HARDCODED_ACCOUNTS[counterpartyId]?.name}`
 
   const cronMsg =
     repeatCron &&

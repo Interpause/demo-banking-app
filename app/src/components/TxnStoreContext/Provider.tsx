@@ -31,7 +31,7 @@ export function TxnStoreProvider({ children }: TxnStoreProviderProps) {
       if (!txn)
         // Treat txn as deleted if not found.
         setTxnMap((prev) => {
-          const { [id]: _unused, ...rest } = prev
+          const { [id]: _, ...rest } = prev
           return rest
         })
       else setTxnMap((prev) => ({ ...prev, [id]: txn }))
@@ -63,7 +63,7 @@ export function TxnStoreProvider({ children }: TxnStoreProviderProps) {
         })
         // Delete from local state.
         setTxnMap((prev) => {
-          const { [id]: _unused, ...rest } = prev
+          const { [id]: _, ...rest } = prev
           return rest
         })
       } catch (e) {

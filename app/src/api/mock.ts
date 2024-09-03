@@ -1,7 +1,7 @@
 /** Generate mock data with loading delay. */
 
 import { DateTime } from 'luxon'
-import { FaBasketShopping, FaYoutube } from 'react-icons/fa6'
+import { FaBasketShopping, FaCircleQuestion, FaYoutube } from 'react-icons/fa6'
 import { IconType } from 'react-icons/lib'
 import { RiDrinks2Fill } from 'react-icons/ri'
 import { v4 } from 'uuid'
@@ -16,23 +16,26 @@ export type PartyData = {
   imgUrl: string
 }
 
-export const TEMP_HARDCODED_ACCOUNTS: PartyData[] = [
-  {
-    id: '863cbec0-6899-48f9-ad27-09c18fa91c18',
-    name: 'Shoppee',
-    imgUrl: 'placeholder_shoppee',
-  },
-  {
-    id: 'eefd8c3a-d198-4606-bbe3-75797971d42f',
-    name: 'T-Labs',
-    imgUrl: 'placeholder_tlabs',
-  },
-  {
-    id: '419fcb91-de6a-4c8d-8096-eb077f89ac95',
-    name: 'YouTube Premium',
-    imgUrl: 'placeholder_youtube',
-  },
-]
+export const TEMP_HARDCODED_ACCOUNTS: Record<string, PartyData> =
+  Object.fromEntries(
+    [
+      {
+        id: '863cbec0-6899-48f9-ad27-09c18fa91c18',
+        name: 'Shoppee',
+        imgUrl: 'placeholder_shoppee',
+      },
+      {
+        id: 'eefd8c3a-d198-4606-bbe3-75797971d42f',
+        name: 'T-Labs',
+        imgUrl: 'placeholder_tlabs',
+      },
+      {
+        id: '419fcb91-de6a-4c8d-8096-eb077f89ac95',
+        name: 'YouTube Premium',
+        imgUrl: 'placeholder_youtube',
+      },
+    ].map((party) => [party.id, party]),
+  )
 
 export const TEMP_IMG_MAP: Record<string, IconType> = {
   placeholder_shoppee: FaBasketShopping,
@@ -40,16 +43,21 @@ export const TEMP_IMG_MAP: Record<string, IconType> = {
   placeholder_youtube: FaYoutube,
 }
 
+export const TEMP_getPartyPic = (id: string) =>
+  TEMP_IMG_MAP[TEMP_HARDCODED_ACCOUNTS[id]?.imgUrl ?? ''] ?? FaCircleQuestion
+
 const MOCK_DELAY = 1000
 const MOCK_IDS_PER_REFRESH = 2
-const MOCK_ID_LIMIT = 10
+const MOCK_ID_LIMIT = 1
 
 const allIds: TxnMap = {}
 const idCallCounter: Record<string, number> = {}
 
 const randomTxn = (id: string): TxnData => ({
   id,
-  counterpartyId: v4(),
+  counterpartyId: Object.keys(TEMP_HARDCODED_ACCOUNTS)[
+    Math.floor(Math.random() * Object.keys(TEMP_HARDCODED_ACCOUNTS).length)
+  ]!,
   createdAt: DateTime.now(),
   name: 'Transaction Name',
   amount: Math.random() * 1000,

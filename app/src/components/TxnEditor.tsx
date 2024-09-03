@@ -2,8 +2,7 @@ import cronstrue from 'cronstrue'
 import { DateTime } from 'luxon'
 import { FormEvent, useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
-import { FaCircleQuestion } from 'react-icons/fa6'
-import { TEMP_HARDCODED_ACCOUNTS, TEMP_IMG_MAP } from '../api/mock'
+import { TEMP_getPartyPic, TEMP_HARDCODED_ACCOUNTS } from '../api/mock'
 import { TxnDataNoId } from '../api/types'
 import Toaster from './Toaster'
 import { TxnDirectionArrow } from './TxnCard'
@@ -15,7 +14,7 @@ import { TxnDirectionArrow } from './TxnCard'
 function convertFormData(fd: FormData): TxnDataNoId {
   // counterpartyId
   const counterpartyId = (fd.get('counterpartyId') as string | null) ?? ''
-  if (!TEMP_HARDCODED_ACCOUNTS.some((party) => party.id === counterpartyId))
+  if (!TEMP_HARDCODED_ACCOUNTS[counterpartyId])
     throw new Error('Party selected does not exist!')
 
   // createdAt
@@ -42,7 +41,7 @@ function convertFormData(fd: FormData): TxnDataNoId {
       if (repeatCron === '') repeatCron = null
       else cronstrue.toString(repeatCron) // Will throw if invalid.
     }
-  } catch (_unused) {
+  } catch (_) {
     throw new Error('Invalid cron expression!')
   }
 
@@ -83,11 +82,7 @@ export function TxnEditor({ open, onClose, onSubmit }: TxnEditorProps) {
   const [direction, setDirection] = useState<'paid' | 'received'>('paid')
   const [selectedPartyId, setSelectedPartyId] = useState('null')
 
-  const SelectedIcon =
-    TEMP_IMG_MAP[
-      TEMP_HARDCODED_ACCOUNTS.find((party) => party.id === selectedPartyId)
-        ?.imgUrl ?? ''
-    ] ?? FaCircleQuestion
+  const SelectedIcon = TEMP_getPartyPic(selectedPartyId)
 
   const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -194,13 +189,15 @@ export function TxnEditor({ open, onClose, onSubmit }: TxnEditorProps) {
               <option disabled value="null">
                 Select Party...
               </option>
-              {TEMP_HARDCODED_ACCOUNTS.map(({ id, name }) => {
-                return (
-                  <option key={id} value={id}>
-                    {name}
-                  </option>
-                )
-              })}
+              {Object.entries(TEMP_HARDCODED_ACCOUNTS).map(
+                ([_, { id, name }]) => {
+                  return (
+                    <option key={id} value={id}>
+                      {name}
+                    </option>
+                  )
+                },
+              )}
             </select>
           </div>
 

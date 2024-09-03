@@ -5,6 +5,7 @@ import toast from 'react-hot-toast'
 import { txnDeleteById, txnGetIdList, txnGetIds } from '../../api'
 import { TxnMap, TxnStoreContext } from './context'
 
+export const REFRESH_TIMEOUT = 3000
 export interface TxnStoreProviderProps {
   children: React.ReactNode
 }
@@ -118,6 +119,14 @@ export function TxnStoreProvider({ children }: TxnStoreProviderProps) {
       }
     })()
   }, [newIds])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (txnIds.length === 0) refreshList()
+      else clearInterval(interval)
+    }, REFRESH_TIMEOUT)
+    return () => clearInterval(interval)
+  }, [refreshList, txnIds.length])
 
   return (
     <TxnStoreContext.Provider

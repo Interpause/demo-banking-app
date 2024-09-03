@@ -7,9 +7,7 @@ import InfiniteLoader from 'react-window-infinite-loader'
 import { TxnData } from '../api'
 import { rem2px } from '../utils'
 import { CARD_HEIGHT_REM, TxnCardItem } from './TxnCard'
-import { useTxnStore } from './TxnStoreContext'
-
-const REFRESH_TIMEOUT = 2000
+import { REFRESH_TIMEOUT, useTxnStore } from './TxnStoreContext'
 
 /** Indicator that list is loading more ids. */
 function LoadingIndicatorItem() {

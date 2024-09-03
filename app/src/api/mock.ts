@@ -41,7 +41,7 @@ async function txnGetId(id: string): Promise<TxnData> {
   idCallCounter[id] = N + 1
   if (N > 1) console.warn(`fetchDataById (${N})`, id)
   else console.log(`fetchDataById`, id)
-  await sleep(MOCK_DELAY)
+  // await sleep(MOCK_DELAY)
   return randomTxn(id)
 }
 
@@ -49,7 +49,7 @@ async function txnGetId(id: string): Promise<TxnData> {
 async function txnGetIds(ids: string[]): Promise<TxnData[]> {
   console.log('fetchDataByIds', ids)
   await sleep(MOCK_DELAY)
-  return ids.map(randomTxn)
+  return await Promise.all(ids.map(txnGetId))
 }
 
 export default {

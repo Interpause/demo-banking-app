@@ -1,7 +1,7 @@
 /** Context provider for state of transaction list. */
 
 import { useCallback, useEffect, useState } from 'react'
-import { txnGetId, txnGetIdList } from '../api'
+import { txnGetIdList, txnGetIds } from '../api'
 import { TxnContext, TxnMap } from './TxnContext'
 
 export interface TxnProviderProps {
@@ -25,8 +25,14 @@ export function TxnProvider({ children }: TxnProviderProps) {
   // Function passed to consumers to refresh specific txn by id.
   const refreshTxn = useCallback(async (id: string) => {
     setTxnMap((prev) => ({ ...prev, [id]: null }))
-    const txn = await txnGetId(id)
-    setTxnMap((prev) => ({ ...prev, [id]: txn }))
+    const txn = (await txnGetIds([id]))[0]
+    if (!txn)
+      // Treat txn as deleted if not found.
+      setTxnMap((prev) => {
+        const { [id]: _unused, ...rest } = prev
+        return rest
+      })
+    else setTxnMap((prev) => ({ ...prev, [id]: txn }))
   }, [])
 
   // Refresh transaction list.
@@ -60,26 +66,15 @@ export function TxnProvider({ children }: TxnProviderProps) {
     if (newIds.length === 0) return
     ;(async () => {
       // Proper way to fetch.
-      // try {
-      //   const txnArr = await fetchDataByIds(newIds)
-      //   setTxnMap((prev) => ({
-      //     ...prev,
-      //     ...Object.fromEntries(txnArr.map((txn) => [txn.id, txn])),
-      //   }))
-      // } catch (err) {
-      //   // TODO: Throw here too.
-      //   console.error('Failed to fetch txns.', err)
-      // }
-
-      // Alt way to fetch that makes items appear one by one.
-      for (const id of newIds) {
-        try {
-          const txn = await txnGetId(id)
-          setTxnMap((prev) => ({ ...prev, [id]: txn }))
-        } catch (err) {
-          // TODO: Throw here too.
-          console.error('Failed to fetch txn.', err)
-        }
+      try {
+        const txnArr = await txnGetIds(newIds)
+        setTxnMap((prev) => ({
+          ...prev,
+          ...Object.fromEntries(txnArr.map((txn) => [txn.id, txn])),
+        }))
+      } catch (err) {
+        // TODO: Throw here too.
+        console.error('Failed to fetch txns.', err)
       }
     })()
   }, [newIds])

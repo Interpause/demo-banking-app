@@ -44,6 +44,18 @@ export default tseslint.config(
         'warn',
         { allowWithName: 'Props$' },
       ],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          args: 'all',
+          argsIgnorePattern: '^_unused',
+          caughtErrors: 'all',
+          caughtErrorsIgnorePattern: '^_unused',
+          destructuredArrayIgnorePattern: '^_unused',
+          varsIgnorePattern: '^_unused',
+          ignoreRestSiblings: true,
+        },
+      ],
     },
   },
 

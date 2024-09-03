@@ -25,7 +25,7 @@ const randomTxn = (id: string): TxnData => ({
 })
 
 /** Fetch all ids from server. */
-async function fetchAllIds() {
+async function txnGetIdList() {
   console.log('fetchAllIds')
   await sleep(MOCK_DELAY)
   // Create new ids each time fetch is called.
@@ -36,7 +36,7 @@ async function fetchAllIds() {
 }
 
 /** Get data associated with id. */
-async function fetchDataById(id: string): Promise<TxnData> {
+async function txnGetId(id: string): Promise<TxnData> {
   const N = idCallCounter[id] ?? 1
   idCallCounter[id] = N + 1
   if (N > 1) console.warn(`fetchDataById (${N})`, id)
@@ -46,14 +46,14 @@ async function fetchDataById(id: string): Promise<TxnData> {
 }
 
 /** Get associated data for each id in list. */
-async function fetchDataByIds(ids: string[]): Promise<TxnData[]> {
+async function txnGetIds(ids: string[]): Promise<TxnData[]> {
   console.log('fetchDataByIds', ids)
   await sleep(MOCK_DELAY)
   return ids.map(randomTxn)
 }
 
 export default {
-  fetchAllIds,
-  fetchDataById,
-  fetchDataByIds,
+  txnGetIdList,
+  txnGetId,
+  txnGetIds,
 } satisfies ApiInterface

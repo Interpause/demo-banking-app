@@ -1,7 +1,7 @@
 /** Context provider for state of transaction list. */
 
 import { useCallback, useEffect, useState } from 'react'
-import { fetchAllIds, fetchDataById } from '../api'
+import { txnGetId, txnGetIdList } from '../api'
 import { TxnContext, TxnMap } from './TxnContext'
 
 export interface TxnProviderProps {
@@ -25,7 +25,7 @@ export function TxnProvider({ children }: TxnProviderProps) {
   // Function passed to consumers to refresh specific txn by id.
   const refreshTxn = useCallback(async (id: string) => {
     setTxnMap((prev) => ({ ...prev, [id]: null }))
-    const txn = await fetchDataById(id)
+    const txn = await txnGetId(id)
     setTxnMap((prev) => ({ ...prev, [id]: txn }))
   }, [])
 
@@ -36,7 +36,7 @@ export function TxnProvider({ children }: TxnProviderProps) {
     ;(async () => {
       // TODO: handle error here.
       try {
-        const allIds = await fetchAllIds()
+        const allIds = await txnGetIdList()
         if (cancelled) return
         const nids = allIds.filter((id) => !txnIds.includes(id))
         // Add new ids to txn list as null to indicate not yet loaded.
@@ -74,7 +74,7 @@ export function TxnProvider({ children }: TxnProviderProps) {
       // Alt way to fetch that makes items appear one by one.
       for (const id of newIds) {
         try {
-          const txn = await fetchDataById(id)
+          const txn = await txnGetId(id)
           setTxnMap((prev) => ({ ...prev, [id]: txn }))
         } catch (err) {
           // TODO: Throw here too.

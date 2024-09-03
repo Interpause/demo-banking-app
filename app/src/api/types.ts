@@ -22,9 +22,9 @@ export interface TxnData {
 /** Interface all API providers should implement. */
 export interface ApiInterface {
   /** Fetch all ids from server. */
-  fetchAllIds(): Promise<UUID[]>
+  txnGetIdList(): Promise<UUID[]>
   /** Get data associated with id. */
-  fetchDataById(id: UUID): Promise<TxnData>
+  txnGetId(id: UUID): Promise<TxnData>
   /** Get associated data for each id in list. */
-  fetchDataByIds(ids: UUID[]): Promise<TxnData[]>
+  txnGetIds(ids: UUID[]): Promise<TxnData[]>
 }

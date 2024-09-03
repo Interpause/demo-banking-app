@@ -2,6 +2,6 @@ import api from './mock'
 // import api from './api'
 
 export type { TxnData, UUID } from './types'
-export const fetchAllIds = api.fetchAllIds
-export const fetchDataById = api.fetchDataById
-export const fetchDataByIds = api.fetchDataByIds
+export const txnGetIdList = api.txnGetIdList
+export const txnGetId = api.txnGetId
+export const txnGetIds = api.txnGetIds

@@ -2,42 +2,11 @@ import cronstrue from 'cronstrue'
 import { DateTime } from 'luxon'
 import { FormEvent, useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
-import { FaBasketShopping, FaCircleQuestion, FaYoutube } from 'react-icons/fa6'
-import { IconType } from 'react-icons/lib'
-import { RiDrinks2Fill } from 'react-icons/ri'
+import { FaCircleQuestion } from 'react-icons/fa6'
+import { TEMP_HARDCODED_ACCOUNTS, TEMP_IMG_MAP } from '../api/mock'
 import { TxnDataNoId } from '../api/types'
 import Toaster from './Toaster'
 import { TxnDirectionArrow } from './TxnCard'
-
-type PartyData = {
-  id: string
-  name: string
-  imgUrl: string
-}
-
-const TEMP_HARDCODED_ACCOUNTS: PartyData[] = [
-  {
-    id: '863cbec0-6899-48f9-ad27-09c18fa91c18',
-    name: 'Shoppee',
-    imgUrl: 'placeholder_shoppee',
-  },
-  {
-    id: 'eefd8c3a-d198-4606-bbe3-75797971d42f',
-    name: 'T-Labs',
-    imgUrl: 'placeholder_tlabs',
-  },
-  {
-    id: '419fcb91-de6a-4c8d-8096-eb077f89ac95',
-    name: 'YouTube Premium',
-    imgUrl: 'placeholder_youtube',
-  },
-]
-
-const TEMP_IMG_MAP: Record<string, IconType> = {
-  placeholder_shoppee: FaBasketShopping,
-  placeholder_tlabs: RiDrinks2Fill,
-  placeholder_youtube: FaYoutube,
-}
 
 // TODO: Use dropdown instead of select to allow showing icons in the select.
 // TODO: Smart tag input with bubbles and autocomplete.

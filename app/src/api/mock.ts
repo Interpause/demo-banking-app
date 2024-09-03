@@ -1,11 +1,44 @@
 /** Generate mock data with loading delay. */
 
 import { DateTime } from 'luxon'
+import { FaBasketShopping, FaYoutube } from 'react-icons/fa6'
+import { IconType } from 'react-icons/lib'
+import { RiDrinks2Fill } from 'react-icons/ri'
 import { v4 } from 'uuid'
 import { TxnData } from '../api'
 import { TxnMap } from '../components'
 import { sleep } from '../utils'
 import { ApiInterface, TxnDataNoId } from './types'
+
+export type PartyData = {
+  id: string
+  name: string
+  imgUrl: string
+}
+
+export const TEMP_HARDCODED_ACCOUNTS: PartyData[] = [
+  {
+    id: '863cbec0-6899-48f9-ad27-09c18fa91c18',
+    name: 'Shoppee',
+    imgUrl: 'placeholder_shoppee',
+  },
+  {
+    id: 'eefd8c3a-d198-4606-bbe3-75797971d42f',
+    name: 'T-Labs',
+    imgUrl: 'placeholder_tlabs',
+  },
+  {
+    id: '419fcb91-de6a-4c8d-8096-eb077f89ac95',
+    name: 'YouTube Premium',
+    imgUrl: 'placeholder_youtube',
+  },
+]
+
+export const TEMP_IMG_MAP: Record<string, IconType> = {
+  placeholder_shoppee: FaBasketShopping,
+  placeholder_tlabs: RiDrinks2Fill,
+  placeholder_youtube: FaYoutube,
+}
 
 const MOCK_DELAY = 1000
 const MOCK_IDS_PER_REFRESH = 2

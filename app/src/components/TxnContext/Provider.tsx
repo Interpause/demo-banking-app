@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { txnDeleteById, txnGetIdList, txnGetIds } from '../api'
-import { TxnContext, TxnMap } from './TxnContext'
+import { txnDeleteById, txnGetIdList, txnGetIds } from '../../api'
+import { TxnContext, TxnMap } from './context'
 
 export interface TxnProviderProps {
   children: React.ReactNode

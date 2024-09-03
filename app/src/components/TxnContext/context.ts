@@ -1,7 +1,7 @@
 /** Context for state of transaction list. */
 
 import { createContext, useContext } from 'react'
-import { TxnData } from '../api'
+import { TxnData } from '../../api'
 
 /** List of txns as map of id to txn data, where data is null till loaded. */
 export type TxnMap = Record<string, TxnData | null>

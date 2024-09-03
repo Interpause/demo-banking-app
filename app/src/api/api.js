@@ -1,6 +1,8 @@
 /** Fill in API functions below. */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
+export const USE_MOCK_API = true
+
 /** Create new transaction record. */
 async function txnCreate(txn) {
   throw new Error('Not implemented')

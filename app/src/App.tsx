@@ -20,7 +20,7 @@ function App() {
           <TxnListDisplay />
         </TxnProvider>
       </div>
-      <div className="prose">
+      <div className="prose bg-base-200">
         <p>
           {`This app was made by somehow who literally doesn't do finance tracking
           so pardon if it seems weird.`}
